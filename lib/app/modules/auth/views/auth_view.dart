@@ -11,39 +11,59 @@ class AuthView extends GetView<AuthController> {
     return Scaffold(
       body: SafeArea(
           child: Padding(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(15),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            Text(
-              "Masuk",
-              style: TypoGraphy.h5,
-              // textAlign: TextAlign.start,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            const Text(
+              "SIMANTAN",
+              style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 15, 25, 34)),
             ),
-            SizedBox(height: 20),
-            TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Username',
-              ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Masuk",
+                  style: TypoGraphy.h5,
+                  // textAlign: TextAlign.start,
+                ),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: controller.usernameController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Username',
+                  ),
+                ),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: controller.passwordController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Password',
+                  ),
+                ),
+                // make full width button
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: Obx(
+                    () => ElevatedButton(
+                      onPressed: () {
+                        controller.login();
+                      },
+                      child: Text(
+                          controller.isSubmit.value ? 'Loading...' : 'Masuk'),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 20),
-            TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Password',
-              ),
-            ),
-            // make full width button
-            SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: null,
-                child: Text('Masuk'),
-              ),
-            ),
+            const Text('v1.0.0'),
           ],
         ),
       )),
