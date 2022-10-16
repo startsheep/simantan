@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:simantan/app/routes/app_pages.dart';
+import 'package:sp_util/sp_util.dart';
 
 class AuthController extends GetxController {
   //TODO: Implement AuthController
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
+  final RxBool isSubmit = false.obs;
+  final RxBool isAuth = false.obs;
 
   @override
   void onInit() {
@@ -19,13 +23,30 @@ class AuthController extends GetxController {
   @override
   void onClose() {}
   void login() {
-    // checking username and password
-    if (usernameController.text == 'admin' &&
-        passwordController.text == 'admin') {
-      Get.snackbar('Login', 'Login Success');
-      Get.offAllNamed('/home');
-    } else {
-      Get.snackbar('Login', 'Login Failed');
-    }
+    isSubmit.value = true;
+    Future.delayed(const Duration(seconds: 3), () {
+      if (usernameController.text == 'admin' &&
+          passwordController.text == 'admin') {
+        // set isAuth to true
+        isSubmit.value = false;
+        isAuth.value = true;
+        SpUtil.putBool('isAuth', true);
+        update();
+        // navigate to home page
+        Get.offAllNamed(Routes.HOME);
+      } else {
+        // show dialog
+        isSubmit.value = false;
+        Get.defaultDialog(
+          title: 'Login Gagal',
+          middleText: 'Username atau Password salah',
+          textConfirm: 'OK',
+          confirmTextColor: Colors.white,
+          onConfirm: () {
+            Get.back();
+          },
+        );
+      }
+    });
   }
 }
