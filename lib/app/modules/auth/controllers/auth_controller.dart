@@ -33,7 +33,7 @@ class AuthController extends GetxController {
         SpUtil.putBool('isAuth', true);
         update();
         // navigate to home page
-        Get.offAllNamed(Routes.HOME);
+        Get.offAllNamed(Routes.CORE);
       } else {
         // show dialog
         isSubmit.value = false;

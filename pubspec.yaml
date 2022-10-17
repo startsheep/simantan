@@ -2,20 +2,21 @@ name: simantan
 version: 1.0.0+1
 publish_to: none
 description: A new Flutter project.
-environment:
+environment: 
   sdk: '>=2.18.2 <3.0.0'
 
-dependencies:
+dependencies: 
   cupertino_icons: ^1.0.2
-  flutter:
-    sdk: flutter
   get: 4.6.5
   sp_util: ^2.0.3
-
-dev_dependencies:
-  flutter_lints: ^2.0.0
-  flutter_test:
+  flutter: 
     sdk: flutter
 
-flutter:
+dev_dependencies: 
+  flutter_lints: ^2.0.0
+  flutter_test: 
+    sdk: flutter
+
+flutter: 
   uses-material-design: true
+
