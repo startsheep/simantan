@@ -8,5 +8,7 @@ class PostProvider extends GetConnect {
   }
 
   // get posts
-  Future<Response> getPosts() => get('users');
+  Future<Response> getPosts() => get('posts');
+  Future<Response> getPost(id) => get('users/$id/posts');
+  Future<Response> getUsers() => get('users');
 }
