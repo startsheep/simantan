@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -18,7 +16,7 @@ class HomeView extends GetView<HomeController> {
         backgroundColor: Colors.white,
         title: Row(
           children: const [
-            Image(image: AssetImage('assets/logo.png'), width: 50),
+            Image(image: AssetImage('assets/logo-brand.png'), width: 50),
             SizedBox(width: 10),
             // dropdown
             Text(
@@ -97,8 +95,11 @@ class HomeView extends GetView<HomeController> {
                               ),
                               child: CircleAvatar(
                                 radius: 30,
-                                backgroundColor:
-                                    Color.fromARGB(255, 118, 255, 59),
+                                backgroundColor: postController.posts[index]
+                                            ['userActive'] ==
+                                        true
+                                    ? Colors.green
+                                    : Colors.grey,
                                 child: CircleAvatar(
                                   radius: 24,
                                   backgroundImage: NetworkImage(

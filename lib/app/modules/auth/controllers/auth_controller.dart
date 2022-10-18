@@ -49,4 +49,9 @@ class AuthController extends GetxController {
       }
     });
   }
+
+  void logout() {
+    SpUtil.putBool('isAuth', false);
+    Get.offAndToNamed(Routes.AUTH);
+  }
 }
