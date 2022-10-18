@@ -18,5 +18,15 @@ class HomeController extends GetxController {
   void onClose() {}
   void increment() => count.value++;
 
+  String formatDateTime(dateTime) {
+    // parse to datetime to Datetime
+    DateTime date = DateTime.parse(dateTime);
+    return date.day.toString() +
+        " " +
+        date.month.toString() +
+        " " +
+        date.year.toString();
+  }
+
   // List<d
 }
