@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:simantan/app/modules/home/controllers/home_controller.dart';
 import 'package:simantan/app/modules/home/controllers/post_controller.dart';
 import 'package:simantan/app/modules/home/views/home_view.dart';
+import 'package:simantan/app/modules/profile/views/profile_view.dart';
 
 class CoreController extends GetxController {
   //TODO: Implement CoreController
@@ -11,10 +12,14 @@ class CoreController extends GetxController {
   List<Widget> views = [
     HomeView(),
     Container(
-      color: Colors.red,
+      color: Colors.blue,
+    ),
+    ProfileView(),
+    Container(
+      color: Color.fromARGB(255, 0, 4, 8),
     ),
     Container(
-      color: Colors.blue,
+      color: Color.fromARGB(255, 0, 4, 8),
     ),
   ];
 
@@ -59,11 +64,13 @@ class CoreController extends GetxController {
     ever(currentPage, (_) {
       onChangePage(currentPage.value);
     });
+    print('onReady');
   }
 
   @override
   void onClose() {
     super.onClose();
+    print('onClose');
   }
 
   void changePage(int newPage) {

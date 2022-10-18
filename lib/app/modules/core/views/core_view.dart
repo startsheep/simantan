@@ -15,16 +15,24 @@ class CoreView extends GetView<CoreController> {
         ),
         bottomNavigationBar: Obx(
           () => BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
             onTap: (value) => controller.changePage(value),
             currentIndex: controller.currentPage.value,
             // backgroundColor: Color.fromARGB(255, 215, 215, 215),
-            items: [
+            items: const [
               BottomNavigationBarItem(
-                icon: Icon(Icons.home),
+                icon: Icon(Icons.home_outlined),
+                activeIcon: Icon(Icons.home),
                 label: 'Home',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.person),
+                icon: Icon(Icons.add_a_photo_outlined),
+                activeIcon: Icon(Icons.add_a_photo_rounded),
+                label: 'Posting',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person_outline_outlined),
+                activeIcon: Icon(Icons.person),
                 label: 'Profile',
               ),
               BottomNavigationBarItem(

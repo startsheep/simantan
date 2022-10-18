@@ -5,15 +5,11 @@ description: A new Flutter project.
 environment: 
   sdk: '>=2.18.2 <3.0.0'
 
-
-# assets
-
-
-
 dependencies: 
   cupertino_icons: ^1.0.2
   get: 4.6.5
   sp_util: ^2.0.3
+  image_picker: 0.8.6
   flutter: 
     sdk: flutter
 
@@ -23,6 +19,7 @@ dev_dependencies:
     sdk: flutter
 
 flutter: 
+  assets: 
+    - assets/logo-brand.png
   uses-material-design: true
-  assets:
-    - assets/
+
