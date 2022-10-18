@@ -7,6 +7,9 @@ class PostController extends GetxController {
   //TODO: Implement PostControllerController
   RxList posts = [].obs;
   RxBool isLoading = true.obs;
+  RxBool isLoadMore = false.obs;
+  RxBool isExpanded = false.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -21,18 +24,13 @@ class PostController extends GetxController {
 
   @override
   void onClose() {}
-  // fetch post from postPrivider
+
   void fetchPosts() async {
-    print('fetch post');
-    final postsFromAPi = await Get.find<PostProvider>().getPosts();
-    // print(post.statusCode);
-    if (postsFromAPi.statusCode == 200) {
-      final jsonResponse = json.encode(postsFromAPi.body);
-      posts.value = json.decode(jsonResponse);
-      // print(posts);
+    final response = await Get.find<PostProvider>().getPosts();
 
-      // posts.assignAll(postsFromA);
-
+    if (response.statusCode == 200) {
+      final data = json.encode(response.body);
+      posts.value = json.decode(data);
       isLoading.value = false;
     }
   }

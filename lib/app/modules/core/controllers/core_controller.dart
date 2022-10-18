@@ -19,6 +19,12 @@ class CoreController extends GetxController {
   ];
 
   // run controller per page
+  void removeController() {
+    if (currentPage.value != 0) {
+      Get.delete<PostController>();
+    }
+  }
+
   void onChangePage(int index) {
     switch (index) {
       case 0:
@@ -42,6 +48,7 @@ class CoreController extends GetxController {
       currentPage,
       (_) {
         onChangePage(currentPage.value);
+        removeController();
       },
     );
   }
@@ -55,9 +62,14 @@ class CoreController extends GetxController {
   }
 
   @override
-  void onClose() {}
+  void onClose() {
+    super.onClose();
+  }
+
   void changePage(int newPage) {
     currentPage.value = newPage;
     update();
   }
+
+  // create function date time from now
 }

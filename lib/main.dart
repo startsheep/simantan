@@ -13,7 +13,7 @@ void main() async {
   await Get.putAsync(() => SpUtil.getInstance());
   runApp(
     GetMaterialApp(
-      title: "Application",
+      title: "SIMANTAN",
       initialRoute: SpUtil.getBool('isAuth')! ? Routes.CORE : Routes.AUTH,
       getPages: AppPages.routes,
     ),
