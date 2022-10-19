@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:simantan/app/modules/home/controllers/post_controller.dart';
+import 'package:simantan/app/controllers/post_controller.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -121,15 +121,21 @@ class HomeView extends GetView<HomeController> {
                             ),
                           ),
                           Container(
-                            height: 350,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              image: DecorationImage(
-                                image: NetworkImage(
-                                    postController.posts[index]['content']),
-                                fit: BoxFit.cover,
-                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color.fromARGB(255, 215, 215, 215)
+                                      .withOpacity(0.5),
+                                  spreadRadius: 3,
+                                  blurRadius: 2,
+                                  blurStyle: BlurStyle.inner,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
                             ),
+                            child: Image.network(
+                                postController.posts[index]['content']),
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

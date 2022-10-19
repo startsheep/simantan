@@ -22,7 +22,7 @@ class AuthView extends GetView<AuthController> {
             children: [
               // image
               Image.asset(
-                'assets/logo.png',
+                'assets/logo-brand.png',
                 width: 200,
               ),
               SizedBox(

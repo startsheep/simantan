@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:simantan/app/modules/home/providers/post_provider.dart';
@@ -9,6 +10,7 @@ class PostController extends GetxController {
   RxBool isLoading = true.obs;
   RxBool isLoadMore = false.obs;
   RxBool isExpanded = false.obs;
+  Rx<File> image = new File('').obs;
 
   @override
   void onInit() {
