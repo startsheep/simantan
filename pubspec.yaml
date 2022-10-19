@@ -9,7 +9,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   get: 4.6.5
   sp_util: ^2.0.3
-  image_picker: 0.8.6
+  images_picker: 1.2.11
   flutter: 
     sdk: flutter
 

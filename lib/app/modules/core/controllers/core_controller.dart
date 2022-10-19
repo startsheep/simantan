@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:simantan/app/modules/home/controllers/home_controller.dart';
-import 'package:simantan/app/modules/home/controllers/post_controller.dart';
+import 'package:simantan/app/controllers/post_controller.dart';
 import 'package:simantan/app/modules/home/views/home_view.dart';
+import 'package:simantan/app/modules/post/views/post_view.dart';
 import 'package:simantan/app/modules/profile/views/profile_view.dart';
 
 class CoreController extends GetxController {
@@ -11,9 +12,7 @@ class CoreController extends GetxController {
   RxInt currentPage = 0.obs;
   List<Widget> views = [
     HomeView(),
-    Container(
-      color: Colors.blue,
-    ),
+    PostView(),
     ProfileView(),
     Container(
       color: Color.fromARGB(255, 0, 4, 8),
