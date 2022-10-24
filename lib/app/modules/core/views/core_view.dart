@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:simantan/app/theme/colors.dart';
 
 import '../controllers/core_controller.dart';
 
@@ -18,6 +19,9 @@ class CoreView extends GetView<CoreController> {
             type: BottomNavigationBarType.fixed,
             onTap: (value) => controller.changePage(value),
             currentIndex: controller.currentPage.value,
+            // selectedFontSize: 16,
+            selectedItemColor: SchemaColor.primary,
+            // backgroundColor: Colors.grey,
             // backgroundColor: Color.fromARGB(255, 215, 215, 215),
             items: const [
               BottomNavigationBarItem(

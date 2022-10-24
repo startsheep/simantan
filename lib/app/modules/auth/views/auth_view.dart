@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:simantan/app/theme/colors.dart';
 import 'package:simantan/app/theme/typhography.dart';
+import 'package:simantan/app/widgets/reuse_textfield.dart';
 
 import '../controllers/auth_controller.dart';
 
@@ -48,46 +50,63 @@ class AuthView extends GetView<AuthController> {
               SizedBox(
                 height: 20,
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Masuk",
-                    style: TypoGraphy.h5,
-                    // textAlign: TextAlign.start,
-                  ),
-                  const SizedBox(height: 20),
-                  TextField(
-                    controller: controller.usernameController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Username',
+              Obx(
+                () => Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Masuk",
+                      style: TypoGraphy.h5,
+                      // textAlign: TextAlign.start,
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  TextField(
-                    controller: controller.passwordController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Password',
+                    const SizedBox(height: 20),
+                    ReuseTextField(
+                      hintText: "NIP",
+                      prefixIcon: Icons.account_circle,
+                      controller: controller.usernameController,
                     ),
-                  ),
-                  // make full width button
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    child: Obx(
-                      () => ElevatedButton(
-                        onPressed: () {
-                          controller.login();
-                        },
-                        child: Text(
-                            controller.isSubmit.value ? 'Loading...' : 'Masuk'),
-                      ),
+                    const SizedBox(height: 20),
+                    ReuseTextField(
+                      controller: controller.passwordController,
+                      hintText: "Password",
+                      prefixIcon: Icons.lock,
+                      obscureText: controller.isPasswordvisible.value,
+                      maxLines: 1,
+                      onPressSuffix: () {
+                        controller.isPasswordvisible.value =
+                            !controller.isPasswordvisible.value;
+                      },
+                      suffixIcon: controller.isPasswordvisible.value
+                          ? Icons.visibility
+                          : Icons.visibility_off,
                     ),
-                  ),
-                ],
+                    // make full width button
+                    const SizedBox(height: 20),
+                    AnimatedContainer(
+                      duration: Duration(milliseconds: 500),
+                      width: double.infinity,
+                      child: controller.isSubmit.value == false
+                          ? ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: SchemaColor.primary,
+                                padding: EdgeInsets.all(12),
+                              ),
+                              onPressed: () {
+                                controller.login();
+                              },
+                              child: Text(
+                                'Masuk',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            )
+                          : const CircularProgressIndicator(),
+                    ),
+                  ],
+                ),
               ),
               SizedBox(
                 height: 20,
