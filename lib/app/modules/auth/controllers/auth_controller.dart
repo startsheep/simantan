@@ -9,6 +9,7 @@ class AuthController extends GetxController {
   final passwordController = TextEditingController();
   final RxBool isSubmit = false.obs;
   final RxBool isAuth = false.obs;
+  final RxBool isPasswordvisible = true.obs;
 
   @override
   void onInit() {
