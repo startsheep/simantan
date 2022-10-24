@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SchemaColor {
-  static const Color primary = Color(0xFF1E88E5);
+  static const Color primary = Color.fromRGBO(77, 110, 255, 1);
   static const Color primaryDark = Color(0xFF1565C0);
   static const Color primaryLight = Color(0xFF64B5F6);
   static const Color accent = Color(0xFF00ACC1);

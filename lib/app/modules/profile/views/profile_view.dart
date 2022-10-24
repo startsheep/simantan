@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:simantan/app/theme/colors.dart';
+import 'package:sp_util/sp_util.dart';
 
 import '../controllers/profile_controller.dart';
 
@@ -33,7 +35,8 @@ class ProfileView extends GetView<ProfileController> {
                         title: const Text('Logout'),
                         onTap: () {
                           Get.back();
-                          Get.offAllNamed('/login');
+                          SpUtil.remove('isAuth');
+                          Get.offAllNamed('/auth');
                         },
                       ),
                     ],
@@ -59,7 +62,7 @@ class ProfileView extends GetView<ProfileController> {
                       backgroundColor: Color.fromARGB(255, 111, 255, 116),
                       child: CircleAvatar(
                         radius: 43,
-                        foregroundColor: Colors.amber,
+                        foregroundColor: SchemaColor.primary,
                         backgroundImage:
                             NetworkImage('https://placeimg.com/640/480/people'),
                       ),
@@ -96,11 +99,11 @@ class ProfileView extends GetView<ProfileController> {
               padding: const EdgeInsets.all(10.0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Color.fromARGB(255, 244, 161, 6),
-                  onPrimary: Colors.white,
+                  backgroundColor: SchemaColor.primary,
                 ),
                 onPressed: () {},
-                child: SizedBox(
+                child: Container(
+                  padding: EdgeInsets.all(10),
                   width: Get.width,
                   child: const Text(
                     'Edit Profile',
