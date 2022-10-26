@@ -16,7 +16,6 @@ class PostController extends GetxController {
   void onInit() {
     super.onInit();
     Get.lazyPut<PostProvider>(() => PostProvider());
-    fetchPosts();
   }
 
   @override
