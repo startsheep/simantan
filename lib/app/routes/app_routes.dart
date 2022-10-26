@@ -8,6 +8,7 @@ abstract class Routes {
   static const CORE = _Paths.CORE;
   static const PROFILE = _Paths.PROFILE;
   static const POST = _Paths.POST;
+  static const DETAIL_POST = _Paths.DETAIL_POST;
 }
 
 abstract class _Paths {
@@ -17,4 +18,5 @@ abstract class _Paths {
   static const CORE = '/core';
   static const PROFILE = '/profile';
   static const POST = '/post';
+  static const DETAIL_POST = '/detail-post';
 }
