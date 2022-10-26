@@ -11,6 +11,7 @@ void main() async {
   await Get.putAsync(() => SpUtil.getInstance());
   runApp(
     GetMaterialApp(
+      defaultTransition: Transition.downToUp,
       title: "SIMANTAN",
       initialRoute: SpUtil.getBool('isAuth')! ? Routes.CORE : Routes.AUTH,
       getPages: AppPages.routes,

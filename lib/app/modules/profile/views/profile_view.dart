@@ -34,9 +34,20 @@ class ProfileView extends GetView<ProfileController> {
                         leading: const Icon(Icons.logout),
                         title: const Text('Logout'),
                         onTap: () {
-                          Get.back();
-                          SpUtil.remove('isAuth');
-                          Get.offAllNamed('/auth');
+                          // confirm dialog
+                          Get.defaultDialog(
+                            title: 'Logout',
+                            middleText: 'Apakah anda yakin ingin logout?',
+                            textConfirm: 'Ya',
+                            textCancel: 'Tidak',
+                            confirmTextColor: Colors.white,
+                            cancelTextColor: Color.fromARGB(255, 23, 22, 22),
+                            buttonColor: SchemaColor.primary,
+                            onConfirm: () {
+                              Get.back();
+                              controller.authController.logout();
+                            },
+                          );
                         },
                       ),
                     ],

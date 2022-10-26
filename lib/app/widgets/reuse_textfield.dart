@@ -46,6 +46,7 @@ class ReuseTextField extends StatelessWidget {
       minLines: minLines,
       maxLines: maxLines,
       validator: validator,
+      controller: controller,
       obscureText: obscureText ?? false,
       decoration: InputDecoration(
         suffixIcon: IconButton(
@@ -55,10 +56,12 @@ class ReuseTextField extends StatelessWidget {
             color: SchemaColor.primary,
           ),
         ),
-        prefixIcon: Icon(
-          prefixIcon,
-          color: SchemaColor.primary,
-        ),
+        prefixIcon: prefixIcon != null
+            ? Icon(
+                prefixIcon,
+                color: SchemaColor.primary,
+              )
+            : null,
         // labelText: "Deskripsi Di Sini Yaa",
         hintText: hintText,
         labelText: labelText,
