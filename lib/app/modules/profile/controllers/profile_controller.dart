@@ -1,12 +1,15 @@
 import 'package:get/get.dart';
+import 'package:simantan/app/modules/auth/controllers/auth_controller.dart';
 
 class ProfileController extends GetxController {
   //TODO: Implement ProfileController
 
-  final count = 0.obs;
+  late AuthController authController;
   @override
   void onInit() {
     super.onInit();
+    Get.lazyPut<AuthController>(() => AuthController());
+    authController = Get.find<AuthController>();
   }
 
   @override
@@ -16,5 +19,4 @@ class ProfileController extends GetxController {
 
   @override
   void onClose() {}
-  void increment() => count.value++;
 }

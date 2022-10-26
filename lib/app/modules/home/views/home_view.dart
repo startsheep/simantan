@@ -8,7 +8,6 @@ class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
   @override
   Widget build(BuildContext context) {
-    final postController = Get.put(PostController());
     return Scaffold(
       appBar: AppBar(
         // make like instagram
@@ -47,12 +46,12 @@ class HomeView extends GetView<HomeController> {
       ),
       body: SafeArea(
         child: Obx(
-          () => postController.isLoading.value
+          () => controller.postController.isLoading.value
               ? Center(
                   child: CircularProgressIndicator(),
                 )
               : ListView.builder(
-                  itemCount: postController.posts.length,
+                  itemCount: controller.postController.posts.length,
                   itemBuilder: (context, index) {
                     return Container(
                       margin: const EdgeInsets.symmetric(
@@ -95,27 +94,30 @@ class HomeView extends GetView<HomeController> {
                               ),
                               child: CircleAvatar(
                                 radius: 30,
-                                backgroundColor: postController.posts[index]
-                                            ['userActive'] ==
+                                backgroundColor: controller.postController
+                                            .posts[index]['userActive'] ==
                                         true
                                     ? Colors.green
                                     : Colors.grey,
                                 child: CircleAvatar(
                                   radius: 24,
-                                  backgroundImage: NetworkImage(
-                                      postController.posts[index]['avatar']),
+                                  backgroundImage: NetworkImage(controller
+                                      .postController.posts[index]['avatar']),
                                 ),
                               ),
                             ),
                             title: Text(
-                              postController.posts[index]['username'],
+                              controller.postController.posts[index]
+                                  ['username'],
                               style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600),
                             ),
                             subtitle: Text(
-                              '#' + postController.posts[index]['hastag'],
+                              '#' +
+                                  controller.postController.posts[index]
+                                      ['hastag'],
                               style: const TextStyle(
                                   color: Colors.black, fontSize: 16),
                             ),
@@ -134,8 +136,8 @@ class HomeView extends GetView<HomeController> {
                                 ),
                               ],
                             ),
-                            child: Image.network(
-                                postController.posts[index]['content']),
+                            child: Image.network(controller
+                                .postController.posts[index]['content']),
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -172,7 +174,8 @@ class HomeView extends GetView<HomeController> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  postController.posts[index]['username'],
+                                  controller.postController.posts[index]
+                                      ['username'],
                                   style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 18,
@@ -180,21 +183,25 @@ class HomeView extends GetView<HomeController> {
                                 ),
                                 const SizedBox(height: 5),
                                 Text(
-                                  postController.posts[index]['description'],
+                                  controller.postController.posts[index]
+                                      ['description'],
                                   style: const TextStyle(
                                       color: Colors.black, fontSize: 16),
                                 ),
                                 const SizedBox(height: 5),
                                 Text(
-                                  '#' + postController.posts[index]['hastag'],
+                                  '#' +
+                                      controller.postController.posts[index]
+                                          ['hastag'],
                                   style: const TextStyle(
                                       color: Color.fromARGB(255, 80, 94, 248),
                                       fontSize: 16),
                                 ),
                                 const SizedBox(height: 5),
                                 Text(
-                                  controller.formatDateTime(
-                                      postController.posts[index]['createdAt']),
+                                  controller.formatDateTime(controller
+                                      .postController
+                                      .posts[index]['createdAt']),
                                   style: const TextStyle(
                                       color: Color.fromARGB(255, 193, 193, 193),
                                       fontSize: 16),
