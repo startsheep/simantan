@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:simantan/app/modules/auth/providers/auth_provider.dart';
 import 'package:simantan/app/routes/app_pages.dart';
 import 'package:sp_util/sp_util.dart';
 
@@ -8,12 +9,15 @@ class AuthController extends GetxController {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   final RxBool isSubmit = false.obs;
+  final RxBool isLoading = false.obs;
   final RxBool isAuth = false.obs;
   final RxBool isPasswordvisible = true.obs;
 
   @override
   void onInit() {
     super.onInit();
+    Get.lazyPut<AuthProvider>(() => AuthProvider());
+    Get.find<AuthProvider>().onInit();
   }
 
   @override
@@ -23,36 +27,38 @@ class AuthController extends GetxController {
 
   @override
   void onClose() {}
-  void login() {
+  void login() async {
     isSubmit.value = true;
-    Future.delayed(const Duration(seconds: 3), () {
-      if (usernameController.text == 'admin' &&
-          passwordController.text == 'admin') {
-        // set isAuth to true
-        isSubmit.value = false;
+    await Get.find<AuthProvider>()
+        .login(usernameController.text, passwordController.text)
+        .then((value) {
+      // print(value.body);
+
+      if (value.statusCode == 200) {
         isAuth.value = true;
-        SpUtil.putBool('isAuth', true);
-        update();
-        // navigate to home page
-        Get.offAllNamed(Routes.CORE);
-      } else {
-        // show dialog
         isSubmit.value = false;
-        Get.defaultDialog(
-          title: 'Login Gagal',
-          middleText: 'Username atau Password salah',
-          textConfirm: 'OK',
-          confirmTextColor: Colors.white,
-          onConfirm: () {
-            Get.back();
-          },
-        );
+        SpUtil.putBool('isAuth', true);
+        // Get.offAllNamed(Routes.CORE);
+      } else {
+        // error notifications
+        isAuth.value = false;
+        isSubmit.value = false;
+        Get.snackbar('asdas', 'asdasd');
       }
     });
   }
 
-  void logout() {
-    SpUtil.putBool('isAuth', false);
-    Get.offAndToNamed(Routes.AUTH);
+  void logout() async {
+    isLoading.value = true;
+    await Get.find<AuthProvider>().logout().then((value) {
+      print(value.body);
+      if (value.statusCode == 200) {
+        isAuth.value = false;
+        SpUtil.putBool('isAuth', false);
+        Get.offAllNamed(Routes.AUTH);
+      } else {
+        isLoading.value = false;
+      }
+    });
   }
 }

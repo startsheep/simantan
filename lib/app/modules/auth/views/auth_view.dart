@@ -12,6 +12,7 @@ class AuthView extends GetView<AuthController> {
 
   @override
   Widget build(BuildContext context) {
+    final formKey = GlobalKey<FormState>();
     return Scaffold(
       body: SafeArea(
           child: SingleChildScrollView(
@@ -50,62 +51,81 @@ class AuthView extends GetView<AuthController> {
               SizedBox(
                 height: 20,
               ),
-              Obx(
-                () => Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Masuk",
-                      style: TypoGraphy.h5,
-                      // textAlign: TextAlign.start,
-                    ),
-                    const SizedBox(height: 20),
-                    ReuseTextField(
-                      hintText: "NIP",
-                      prefixIcon: Icons.account_circle,
-                      controller: controller.usernameController,
-                    ),
-                    const SizedBox(height: 20),
-                    ReuseTextField(
-                      controller: controller.passwordController,
-                      hintText: "Password",
-                      prefixIcon: Icons.lock,
-                      obscureText: controller.isPasswordvisible.value,
-                      maxLines: 1,
-                      onPressSuffix: () {
-                        controller.isPasswordvisible.value =
-                            !controller.isPasswordvisible.value;
-                      },
-                      suffixIcon: controller.isPasswordvisible.value
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                    ),
-                    // make full width button
-                    const SizedBox(height: 20),
-                    AnimatedContainer(
-                      duration: Duration(milliseconds: 500),
-                      width: double.infinity,
-                      child: controller.isSubmit.value == false
-                          ? ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: SchemaColor.primary,
-                                padding: EdgeInsets.all(12),
-                              ),
-                              onPressed: () {
-                                controller.login();
-                              },
-                              child: Text(
-                                'Masuk',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            )
-                          : const CircularProgressIndicator(),
-                    ),
-                  ],
+              Form(
+                key: formKey,
+                child: Obx(
+                  () => Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Masuk",
+                        style: TypoGraphy.h5,
+                        // textAlign: TextAlign.start,
+                      ),
+                      const SizedBox(height: 20),
+                      ReuseTextField(
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Nip tidak boleh kosong";
+                          }
+                          return null;
+                        },
+                        hintText: "NIP",
+                        prefixIcon: Icons.account_circle,
+                        controller: controller.usernameController,
+                      ),
+                      const SizedBox(height: 20),
+                      ReuseTextField(
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Password tidak boleh kosong";
+                          }
+                          return null;
+                        },
+                        controller: controller.passwordController,
+                        hintText: "Password",
+                        prefixIcon: Icons.lock,
+                        obscureText: controller.isPasswordvisible.value,
+                        maxLines: 1,
+                        onPressSuffix: () {
+                          controller.isPasswordvisible.value =
+                              !controller.isPasswordvisible.value;
+                        },
+                        suffixIcon: controller.isPasswordvisible.value
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                      ),
+                      // make full width button
+                      const SizedBox(height: 20),
+                      AnimatedContainer(
+                        duration: Duration(milliseconds: 500),
+                        width: double.infinity,
+                        child: controller.isSubmit.value == false
+                            ? ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: SchemaColor.primary,
+                                  padding: EdgeInsets.all(12),
+                                ),
+                                onPressed: () {
+                                  if (formKey.currentState!.validate())
+                                    controller.login();
+                                },
+                                child: Text(
+                                  'Masuk',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              )
+                            : Center(
+                                child: const CircularProgressIndicator(
+                                color: SchemaColor.primary,
+                              )),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               SizedBox(
