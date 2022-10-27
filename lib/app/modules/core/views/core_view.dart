@@ -21,7 +21,7 @@ class CoreView extends GetView<CoreController> {
             currentIndex: controller.currentPage.value,
             // selectedFontSize: 16,
             selectedItemColor: SchemaColor.primary,
-            // backgroundColor: Colors.grey,
+            // backgroundColor: Colors.grey,P
             // backgroundColor: Color.fromARGB(255, 215, 215, 215),
             items: const [
               BottomNavigationBarItem(

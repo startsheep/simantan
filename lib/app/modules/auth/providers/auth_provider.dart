@@ -1,11 +1,16 @@
 import 'package:get/get.dart';
+import 'package:simantan/app/services/auth_services.dart';
 
 class AuthProvider extends GetConnect {
   @override
   void onInit() {
     httpClient.baseUrl = 'http://simantan.nataysa.com/api/';
-    // model
-    // httpClient.defaultDecoder = (map) => User.fromJson(map);
+    httpClient.addAuthenticator<dynamic>((request) async {
+      request.headers['Authorization'] = AuthServices.getToken;
+      return request;
+    });
+    // set headers
+    // httpClient.addAuthenticator((request) => request);
   }
 
   Future<Response> login(String username, String password) async {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:simantan/app/services/auth_services.dart';
 import 'package:sp_util/sp_util.dart';
 
 import 'app/routes/app_pages.dart';
@@ -11,9 +12,8 @@ void main() async {
   await Get.putAsync(() => SpUtil.getInstance());
   runApp(
     GetMaterialApp(
-      defaultTransition: Transition.downToUp,
       title: "SIMANTAN",
-      initialRoute: SpUtil.getBool('isAuth')! ? Routes.CORE : Routes.AUTH,
+      initialRoute: AuthServices.getAuth ? Routes.CORE : Routes.AUTH,
       getPages: AppPages.routes,
     ),
   );
