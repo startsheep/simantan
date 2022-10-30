@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
 import 'package:get/get.dart';
 import 'package:simantan/app/services/auth_services.dart';
 
@@ -5,10 +7,7 @@ class AuthProvider extends GetConnect {
   @override
   void onInit() {
     httpClient.baseUrl = 'http://simantan.nataysa.com/api/';
-    httpClient.addAuthenticator<dynamic>((request) async {
-      request.headers['Authorization'] = AuthServices.getToken;
-      return request;
-    });
+
     // set headers
     // httpClient.addAuthenticator((request) => request);
   }
@@ -21,6 +20,8 @@ class AuthProvider extends GetConnect {
   }
 
   Future<Response> logout() async {
-    return await post('auth/logout', {});
+    return await post('auth/logout', {}, headers: {
+      'Authorization': 'Bearer ' + AuthServices.getToken,
+    });
   }
 }

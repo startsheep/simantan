@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:simantan/app/modules/auth/providers/auth_provider.dart';
 import 'package:simantan/app/routes/app_pages.dart';
+import 'package:simantan/app/services/auth_services.dart';
 import 'package:sp_util/sp_util.dart';
 
 class AuthController extends GetxController {
@@ -32,18 +33,26 @@ class AuthController extends GetxController {
     await Get.find<AuthProvider>()
         .login(usernameController.text, passwordController.text)
         .then((value) {
-      // print(value.body);
+      // print(value.body['data']['token']);
 
       if (value.statusCode == 200) {
         isAuth.value = true;
         isSubmit.value = false;
-        SpUtil.putBool('isAuth', true);
-        // Get.offAllNamed(Routes.CORE);
+        AuthServices.setAuth = true;
+        AuthServices.setToken = value.body['data']['token'];
+        AuthServices.setUser = value.body['data']['user'];
+        Get.offAllNamed(Routes.CORE);
       } else {
         // error notifications
         isAuth.value = false;
         isSubmit.value = false;
-        Get.snackbar('asdas', 'asdasd');
+        Get.snackbar(
+          'Gagal',
+          'Periksa NIP atau Password anda',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Color.fromARGB(255, 255, 204, 126),
+          margin: EdgeInsets.only(bottom: 20, left: 20, right: 20),
+        );
       }
     });
   }
@@ -53,8 +62,10 @@ class AuthController extends GetxController {
     await Get.find<AuthProvider>().logout().then((value) {
       print(value.body);
       if (value.statusCode == 200) {
-        isAuth.value = false;
-        SpUtil.putBool('isAuth', false);
+        isLoading.value = false;
+        AuthServices.setAuth = false;
+        AuthServices.setToken = '';
+
         Get.offAllNamed(Routes.AUTH);
       } else {
         isLoading.value = false;
