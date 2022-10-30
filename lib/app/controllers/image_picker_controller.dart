@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -17,13 +18,25 @@ class ImagePickerController extends GetxController {
     _picker = ImagePicker();
   }
 
-  getImageFromGallery() {
+  getImageFromGallery() async {
     isLoading.value = true;
-    _picker.getImage(source: ImageSource.gallery).then((value) {
-      if (value != null) {
-        image.value = File(value.path);
-        isLoading.value = false;
-      }
-    });
+    print("GetImage");
+    final XFile? _image = await _picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 50,
+    )!;
+    print('image path: ${_image!.path}');
+    return _image;
+  }
+
+  getImageFromCamera() async {
+    isLoading.value = true;
+    print("GetImage");
+    final XFile? _image = await _picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 50,
+    )!;
+    print('image path: ${_image!.path}');
+    return _image;
   }
 }

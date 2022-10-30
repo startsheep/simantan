@@ -102,27 +102,30 @@ class HomeView extends GetView<HomeController> {
                                 child: CircleAvatar(
                                   radius: 24,
                                   backgroundImage: NetworkImage(controller
-                                      .postController.posts[index]['avatar']),
+                                      .postController
+                                      .posts[index]['user']['image']),
                                 ),
                               ),
                             ),
                             title: Text(
-                              controller.postController.posts[index]
-                                  ['username'],
+                              controller.postController.posts[index]['user']
+                                  ['name'],
                               style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600),
                             ),
-                            subtitle: Text(
-                              '#' +
-                                  controller.postController.posts[index]
-                                      ['hastag'],
-                              style: const TextStyle(
-                                  color: Colors.black, fontSize: 16),
-                            ),
+                            // subtitle: Text(
+                            //   '#' +
+                            //       controller.postController.posts[index]
+                            //           ['hastag'],
+                            //   style: const TextStyle(
+                            //       color: Colors.black, fontSize: 16),
+                            // ),
                           ),
                           Container(
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            margin: EdgeInsets.symmetric(vertical: 10),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               boxShadow: [
@@ -137,7 +140,7 @@ class HomeView extends GetView<HomeController> {
                               ],
                             ),
                             child: Image.network(controller
-                                .postController.posts[index]['content']),
+                                .postController.posts[index]['image']),
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -174,8 +177,8 @@ class HomeView extends GetView<HomeController> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  controller.postController.posts[index]
-                                      ['username'],
+                                  controller.postController.posts[index]['user']
+                                      ['name'],
                                   style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 18,
@@ -192,7 +195,7 @@ class HomeView extends GetView<HomeController> {
                                 Text(
                                   '#' +
                                       controller.postController.posts[index]
-                                          ['hastag'],
+                                          ['flag']['name'],
                                   style: const TextStyle(
                                       color: Color.fromARGB(255, 80, 94, 248),
                                       fontSize: 16),
@@ -201,7 +204,7 @@ class HomeView extends GetView<HomeController> {
                                 Text(
                                   controller.formatDateTime(controller
                                       .postController
-                                      .posts[index]['createdAt']),
+                                      .posts[index]['created_at']),
                                   style: const TextStyle(
                                       color: Color.fromARGB(255, 193, 193, 193),
                                       fontSize: 16),
