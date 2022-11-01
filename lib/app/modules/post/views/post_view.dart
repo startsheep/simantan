@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:simantan/app/controllers/post_controller.dart';
 import 'package:simantan/app/modules/post/views/widget_upload..dart';
-import 'package:simantan/app/theme/colors.dart';
+import 'package:simantan/app/widgets/button_primary.dart';
+import 'package:simantan/app/widgets/reuse_dropdown_search.dart';
 import 'package:simantan/app/widgets/reuse_textfield.dart';
 
 class PostView extends GetView<PostController> {
@@ -16,87 +15,71 @@ class PostView extends GetView<PostController> {
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(15),
-            child: Column(
-              children: [
-                WidgetUpload(),
-                const Divider(),
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      ReuseTextField(
-                        validator: (val) {
-                          if (val == null || val.isEmpty) {
-                            return "deskripsi tidak boleh kosong";
-                          }
-                          return null;
-                        },
-                        labelText: "Deskripsi",
-                        hintText: "Deskrpsi",
-                        icon: Icons.title,
-                        minLines: 1,
-                        maxLines: 10,
-                      ),
-                      // Drop
-                      const Divider(),
-                      MultiSelectDialogField(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                              color: const Color.fromARGB(255, 137, 126, 255),
-                              style: BorderStyle.solid,
-                              strokeAlign: StrokeAlign.outside),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Color.fromARGB(159, 202, 202, 202),
-                              spreadRadius: 1,
-                              blurRadius: 1,
-                              offset: Offset(1, 4),
-                            )
-                          ],
+            child: Obx(() {
+              return Column(
+                children: [
+                  const WidgetUpload(),
+                  const Divider(),
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        ReuseTextField(
+                          controller: controller.descriptionController.value,
+                          validator: (val) {
+                            if (val == null || val.isEmpty) {
+                              return "deskripsi tidak boleh kosong";
+                            }
+                            return null;
+                          },
+                          labelText: "Deskripsi",
+                          hintText: "Deskrpsi",
+                          icon: Icons.title,
+                          minLines: 1,
+                          maxLines: 10,
                         ),
-                        items: ['Lebaran', '17Gustur', 'Kemahasiswaan']
-                            .map((e) => MultiSelectItem(e, e))
-                            .toList(),
-                        listType: MultiSelectListType.CHIP,
-                        onConfirm: (values) {
-                          // _selectedAnimals = values;
-                        },
-                      ),
-                      // Button Unggah
-                      const Divider(),
-                      Container(
-                        width: Get.width,
-                        height: 50,
-                        margin: const EdgeInsets.symmetric(vertical: 10),
-                        child: ElevatedButton(
+                        // Drop
+                        const Divider(),
+
+                        // Button Unggah
+                        const Divider(),
+                        ReuseDropDownSearch(
+                          title: "Tagar",
+                          asyncItems: controller
+                              .fetchFlags(controller.searchFlag.value.text),
+                          onChange: (val) {
+                            controller.flagId.value = val["id"];
+                          },
+                          itemAsString: (item) {
+                            return item['name'].toString();
+                          },
+                          filterFn: (item, text) {
+                            return item['name']
+                                .toString()
+                                .toLowerCase()
+                                .contains(text.toLowerCase());
+                          },
+                        ),
+                        // create dropdown manualy with search
+
+                        const Divider(),
+                        ButtonPrimary(
+                          label: "Unggah",
                           onPressed: () {
-                            if (_formKey.currentState!.validate()) {
+                            if (_formKey.currentState!.validate() &&
+                                controller.flagId.value != null &&
+                                controller.image.value != null &&
+                                controller.image.value.path.isNotEmpty) {
                               controller.storePost();
                             }
                           },
-                          child: const Text(
-                            "Unggah",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: SchemaColor.primary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
+                      ],
+                    ),
+                  )
+                ],
+              );
+            }),
           ),
         ),
       ),
