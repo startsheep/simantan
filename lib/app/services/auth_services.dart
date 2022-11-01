@@ -7,4 +7,7 @@ class AuthServices {
   static get getAuth => SpUtil.getBool('isAuth');
   static set setUser(Object user) => SpUtil.putObject('user', user);
   static get getUser => SpUtil.getObject('user');
+  static set setRole(Object role) => SpUtil.putObject('role', role);
+  static set setUserId(int id) => SpUtil.putInt('user_id', id);
+  static get getUserId => SpUtil.getInt('user_id');
 }

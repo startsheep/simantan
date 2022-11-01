@@ -41,6 +41,7 @@ class AuthController extends GetxController {
         AuthServices.setAuth = true;
         AuthServices.setToken = value.body['data']['token'];
         AuthServices.setUser = value.body['data']['user'];
+        AuthServices.setUserId = value.body['data']['user']['id'];
         Get.offAllNamed(Routes.CORE);
       } else {
         // error notifications
