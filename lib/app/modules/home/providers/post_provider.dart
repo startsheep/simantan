@@ -12,12 +12,12 @@ class PostProvider extends GetConnect {
 
   // get posts
   Future<Response> storePost(
-      {String? description, String? hashtag, File? file}) async {
+      {String? description, int? hashtagId, File? file}) async {
     // post with image file
     final _formData = FormData({
       'description': description,
-      'flag_id': 2,
-      'user_id': 1,
+      'flag_id': hashtagId,
+      'user_id': AuthServices.getUserId,
       'image': MultipartFile(
         file!,
         filename: file.path.split('/').last,
@@ -33,6 +33,22 @@ class PostProvider extends GetConnect {
   Future<Response> getPosts() => get('post', headers: {
         'Authorization': 'Bearer ' + AuthServices.getToken,
       });
-  Future<Response> getPost(id) => get('users/$id/posts');
-  Future<Response> getPostComments(id) => get('posts/$id/comments');
+
+  Future<Response> storeFlag(String flag) {
+    return post('flag', {
+      "name": flag,
+    }, headers: {
+      'Authorization': 'Bearer ' + AuthServices.getToken,
+    });
+  }
+
+  Future<Response> getFlags(String search) => get(
+        'flag',
+        headers: {
+          'Authorization': 'Bearer ' + AuthServices.getToken,
+        },
+        query: {
+          'search': search,
+        },
+      );
 }
