@@ -11,6 +11,7 @@ class HomeController extends GetxController {
     Get.lazyPut<PostController>(() => PostController());
     postController = Get.find<PostController>();
     postController.onInit();
+    postController.fetchPosts();
   }
 
   @override
