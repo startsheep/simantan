@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:simantan/app/controllers/post_controller.dart';
+import 'package:simantan/app/modules/home/widgets/post_actions.dart';
+import 'package:simantan/app/modules/home/widgets/post_content.dart';
+import 'package:simantan/app/modules/home/widgets/post_description.dart';
+import 'package:simantan/app/modules/home/widgets/post_user.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -76,140 +80,32 @@ class HomeView extends GetView<HomeController> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ListTile(
-                            contentPadding: const EdgeInsets.all(0),
-                            leading: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(100),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color.fromARGB(255, 224, 224, 224)
-                                        .withOpacity(0.5),
-                                    spreadRadius: 3,
-                                    blurRadius: 2,
-                                    blurStyle: BlurStyle.inner,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ],
-                              ),
-                              child: CircleAvatar(
-                                radius: 30,
-                                backgroundColor: controller.postController
-                                            .posts[index]['userActive'] ==
-                                        true
-                                    ? Colors.green
-                                    : Colors.grey,
-                                child: CircleAvatar(
-                                  radius: 24,
-                                  backgroundImage: NetworkImage(controller
-                                      .postController
-                                      .posts[index]['user']['image']),
-                                ),
-                              ),
-                            ),
-                            title: Text(
-                              controller.postController.posts[index]['user']
-                                  ['name'],
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                            // subtitle: Text(
-                            //   '#' +
-                            //       controller.postController.posts[index]
-                            //           ['hastag'],
-                            //   style: const TextStyle(
-                            //       color: Colors.black, fontSize: 16),
-                            // ),
+                          PostUser(
+                            avatarUrl: controller.postController.posts[index]
+                                ['user']['image'],
+                            username: controller.postController.posts[index]
+                                ['user']['name'],
+                            isActive: controller.postController.posts[index]
+                                        ['user']['is_active'] ==
+                                    1
+                                ? true
+                                : false,
                           ),
-                          Container(
-                            clipBehavior: Clip.antiAliasWithSaveLayer,
-                            margin: EdgeInsets.symmetric(vertical: 10),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color.fromARGB(255, 215, 215, 215)
-                                      .withOpacity(0.5),
-                                  spreadRadius: 3,
-                                  blurRadius: 2,
-                                  blurStyle: BlurStyle.inner,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: Image.network(controller
-                                .postController.posts[index]['image']),
+                          PostContent(
+                            contentUrl: controller.postController.posts[index]
+                                ['image'],
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(Icons.favorite_border),
-                                    onPressed: () {},
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.comment_outlined),
-                                    onPressed: () {},
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.download_outlined),
-                                    onPressed: () {},
-                                  ),
-                                ],
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.bookmark_border),
-                                onPressed: () {},
-                              ),
-                            ],
-                          ),
-                          // render container with heigth fit image
-                          // box description
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 10),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  controller.postController.posts[index]['user']
-                                      ['name'],
-                                  style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  controller.postController.posts[index]
-                                      ['description'],
-                                  style: const TextStyle(
-                                      color: Colors.black, fontSize: 16),
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  '#' +
-                                      controller.postController.posts[index]
-                                          ['flag']['name'],
-                                  style: const TextStyle(
-                                      color: Color.fromARGB(255, 80, 94, 248),
-                                      fontSize: 16),
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  controller.formatDateTime(controller
-                                      .postController
-                                      .posts[index]['created_at']),
-                                  style: const TextStyle(
-                                      color: Color.fromARGB(255, 193, 193, 193),
-                                      fontSize: 16),
-                                ),
-                              ],
+                          PostActions(),
+                          PostDescription(
+                            username: controller.postController.posts[index]
+                                ['user']['name'],
+                            description: controller.postController.posts[index]
+                                ['description'],
+                            hastag: controller.postController.posts[index]
+                                ['flag']['name'],
+                            time: controller.formatDateTime(
+                              controller.postController.posts[index]
+                                  ['created_at'],
                             ),
                           ),
                         ],
