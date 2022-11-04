@@ -166,11 +166,25 @@ List<Map<String, dynamic>> likes = [
   },
 ];
 
-
-// flow likes 
+// flow likes
 // 1. user 1 like post 1
 
-  
 // 2. user 2 like post 1
 // 3. user 1 unlike post 1
 // 4. user 2 unlike post 1
+
+//crete method dateFromNow
+String dateFromNow(String date) {
+  DateTime now = DateTime.now();
+  DateTime postDate = DateTime.parse(date);
+  Duration diff = now.difference(postDate);
+  if (diff.inDays > 0) {
+    return '${diff.inDays} hari yang lalu';
+  } else if (diff.inHours > 0) {
+    return '${diff.inHours} jam yang lalu';
+  } else if (diff.inMinutes > 0) {
+    return '${diff.inMinutes} menit yang lalu';
+  } else {
+    return 'Sekarang';
+  }
+}
