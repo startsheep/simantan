@@ -33,7 +33,9 @@ class PostUser extends StatelessWidget {
           backgroundColor: isActive! ? Colors.green : Colors.grey,
           child: CircleAvatar(
             radius: 24,
-            backgroundImage: NetworkImage(avatarUrl!),
+            backgroundImage: avatarUrl == null
+                ? const AssetImage('assets/avatar.png')
+                : Image.network(avatarUrl!).image,
           ),
         ),
       ),

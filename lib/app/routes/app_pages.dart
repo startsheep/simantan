@@ -2,9 +2,10 @@ import 'package:get/get.dart';
 
 import '../modules/auth/bindings/auth_binding.dart';
 import '../modules/auth/views/auth_view.dart';
+import '../modules/comment/bindings/comment_binding.dart';
+import '../modules/comment/views/comment_view.dart';
 import '../modules/core/bindings/core_binding.dart';
 import '../modules/core/views/core_view.dart';
-
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/post/bindings/post_binding.dart';
@@ -49,6 +50,12 @@ class AppPages {
       name: _Paths.POST,
       page: () => PostView(),
       binding: PostBinding(),
+    ),
+    GetPage(
+      transition: Transition.leftToRightWithFade,
+      name: _Paths.COMMENT,
+      page: () => CommentView(),
+      binding: CommentBinding(),
     ),
   ];
 }

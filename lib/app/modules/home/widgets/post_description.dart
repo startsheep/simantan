@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:simantan/app/routes/app_pages.dart';
+import 'package:simantan/app/theme/colors.dart';
 
 class PostDescription extends StatelessWidget {
   String? username;
   String? description;
   String? hastag;
   String? time;
+  String? postId;
   PostDescription({
     Key? key,
     this.username,
     this.description,
     this.hastag,
+    this.postId,
     this.time,
   }) : super(key: key);
 
@@ -27,21 +32,52 @@ class PostDescription extends StatelessWidget {
                 color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 5),
+          // ,ake description collapse when many text
           Text(
             description!,
-            style: const TextStyle(color: Colors.black, fontSize: 16),
-          ),
-          const SizedBox(height: 5),
-          Text(
-            '#' + hastag!,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(
-                color: Color.fromARGB(255, 80, 94, 248), fontSize: 16),
+              color: Colors.black,
+              fontSize: 14,
+            ),
           ),
+          // make hastag clickable
           const SizedBox(height: 5),
-          Text(
-            time!,
-            style: const TextStyle(
-                color: Color.fromARGB(255, 193, 193, 193), fontSize: 16),
+          // see comment like instagram comment with gesture detector
+          InkWell(
+            onTap: () {
+              Get.toNamed(Routes.COMMENT, parameters: {'post_id': postId!});
+            },
+            child: Text(
+              "Lihat 12 komentar",
+              style: const TextStyle(
+                color: Color.fromARGB(255, 102, 102, 102),
+                fontSize: 14,
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 5),
+          // see comment like instagram.com
+          Row(
+            children: [
+              Text(
+                hastag!,
+                style: const TextStyle(
+                    color: SchemaColor.primary,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(width: 5),
+              Text(
+                time!,
+                style: const TextStyle(
+                    color: Color.fromARGB(255, 86, 86, 86),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400),
+              ),
+            ],
           ),
         ],
       ),

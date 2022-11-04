@@ -8,7 +8,6 @@ import 'app/routes/app_pages.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await SpUtil.getInstance();
   await Get.putAsync(() => SpUtil.getInstance());
   runApp(
     GetMaterialApp(
