@@ -84,6 +84,12 @@ class PostController extends GetxController {
     }
   }
 
+  void downloadImage(String path) async {
+    final response = await Get.find<PostProvider>().downloadImage(path);
+    print(response.statusCode);
+    print(response.body);
+  }
+
   String randomStringWord() {
     var random = Random();
     //make random word
