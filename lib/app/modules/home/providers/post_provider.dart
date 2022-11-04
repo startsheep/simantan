@@ -51,4 +51,10 @@ class PostProvider extends GetConnect {
           'search': search,
         },
       );
+
+  // create function for downloadImage
+  Future<Response> downloadImage(String path) async {
+    final response = await get(path);
+    return response;
+  }
 }
