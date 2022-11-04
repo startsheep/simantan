@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:simantan/app/controllers/comment_controller.dart';
+import 'package:simantan/app/modules/comment/views/comment_view.dart';
 import 'package:simantan/app/modules/home/controllers/home_controller.dart';
 import 'package:simantan/app/controllers/post_controller.dart';
 import 'package:simantan/app/modules/home/views/home_view.dart';
@@ -11,19 +13,14 @@ class CoreController extends GetxController {
   //TODO: Implement CoreController
 
   RxInt currentPage = 0.obs;
-  List<Widget> views = [
-    HomeView(),
-    PostView(),
-    ProfileView(),
-    Container(
-      color: Color.fromARGB(255, 0, 4, 8),
-    ),
-  ];
+  List<Widget> views = [HomeView(), PostView(), ProfileView(), CommentView()];
 
   // run controller per page
   void removeController() {
     if (currentPage.value != 0) {
       Get.delete<HomeController>();
+      Get.delete<PostController>();
+      Get.delete<CommentController>();
     }
     if (currentPage.value != 1) {
       Get.delete<PostController>();
@@ -42,7 +39,7 @@ class CoreController extends GetxController {
         break;
       case 1:
         Get.lazyPut<PostController>(() => PostController());
-        // Get.find<PostController>().onInit();
+        Get.find<PostController>().fetchFlags("");
         break;
       case 2:
         // Get.find<AuthController>().onInit();
@@ -82,8 +79,13 @@ class CoreController extends GetxController {
 
   void changePage(int newPage) {
     currentPage.value = newPage;
-    update();
   }
 
+  bool isWantPost() {
+    final bool _isHasText =
+        Get.find<PostController>().descriptionController.value.text.isNotEmpty;
+    final bool _isHasImage = Get.find<PostController>().image.value.path != '';
+    return (_isHasText || _isHasImage);
+  }
   // create function date time from now
 }
