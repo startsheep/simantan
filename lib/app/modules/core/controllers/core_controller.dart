@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:simantan/app/controllers/comment_controller.dart';
+import 'package:simantan/app/modules/comment/controllers/comment_controller.dart';
 import 'package:simantan/app/modules/comment/views/comment_view.dart';
 import 'package:simantan/app/modules/home/controllers/home_controller.dart';
 import 'package:simantan/app/controllers/post_controller.dart';
