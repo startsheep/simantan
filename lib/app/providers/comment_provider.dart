@@ -41,14 +41,17 @@ class CommentProvider extends GetConnect {
     return response;
   }
 
-  Future<Response> getCommentsByPost(String postId) async {
+  Future<Response> getCommentsByPost(
+      String postId, LazyLoadingFilter filter) async {
     final response = await get(
       'comment',
       headers: {
         'Authorization': 'Bearer ' + AuthServices.getToken,
       },
       query: {
-        'post_id': postId,
+        'post': postId,
+        'page': filter.page.toString(),
+        'per_page': filter.limit.toString(),
       },
     );
     return response;

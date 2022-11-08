@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
 import 'dart:io';
 
 import 'package:get/get.dart';
@@ -33,11 +35,21 @@ class PostProvider extends GetConnect {
   Future<Response> getPosts() => get('post', headers: {
         'Authorization': 'Bearer ' + AuthServices.getToken,
       });
-
+  Future<Response> getPostsByUser() => get('post', headers: {
+        'Authorization': 'Bearer ' + AuthServices.getToken,
+      }, query: {
+        'user': AuthServices.getUserId.toString(),
+      });
   Future<Response> storeFlag(String flag) {
     return post('flag', {
       "name": flag,
     }, headers: {
+      'Authorization': 'Bearer ' + AuthServices.getToken,
+    });
+  }
+
+  Future<Response> deletePost(int id) {
+    return delete('post/$id', headers: {
       'Authorization': 'Bearer ' + AuthServices.getToken,
     });
   }

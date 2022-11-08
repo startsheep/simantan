@@ -12,6 +12,8 @@ import '../modules/post/bindings/post_binding.dart';
 import '../modules/post/views/post_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
+import '../modules/test/bindings/test_binding.dart';
+import '../modules/test/views/test_view.dart';
 
 part 'app_routes.dart';
 
@@ -56,6 +58,11 @@ class AppPages {
       name: _Paths.COMMENT,
       page: () => CommentView(),
       binding: CommentBinding(),
+    ),
+    GetPage(
+      name: _Paths.TEST,
+      page: () => const TestView(),
+      binding: TestBinding(),
     ),
   ];
 }

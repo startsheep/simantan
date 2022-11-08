@@ -11,6 +11,7 @@ import 'package:simantan/app/modules/home/providers/post_provider.dart';
 class PostController extends GetxController {
   //TODO: Implement PostControllerController
   RxList posts = [].obs;
+  RxList myPosts = [].obs;
   RxList flags = [].obs;
   RxBool isLoading = true.obs;
   RxBool isUploading = false.obs;
@@ -50,11 +51,24 @@ class PostController extends GetxController {
 
   void fetchPosts() async {
     final response = await Get.find<PostProvider>().getPosts();
-    final _posts = json.encode(response.body['data']);
-    posts.value = json.decode(_posts);
-
     if (response.statusCode == 200) {
       isLoading.value = false;
+      posts.value = json.decode(json.encode(response.body['data']));
+    } else {
+      isLoading.value = false;
+      posts.value = [];
+    }
+  }
+
+  void getMyPosts() async {
+    print('getMyPosts');
+    final response = await Get.find<PostProvider>().getPostsByUser();
+    if (response.statusCode == 200) {
+      final _posts = json.encode(response.body['data']);
+      myPosts.value = json.decode(_posts);
+      print(myPosts);
+    } else {
+      myPosts.value = [];
     }
   }
 
@@ -81,6 +95,14 @@ class PostController extends GetxController {
     print(response.body);
     if (response.statusCode == 201) {
       fetchFlags(searchFlag.value.text);
+    }
+  }
+
+  void deletePost(int id) async {
+    final response = await Get.find<PostProvider>().deletePost(id);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      fetchPosts();
     }
   }
 

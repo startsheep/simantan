@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
-import 'package:simantan/app/controllers/comment_controller.dart';
+import 'package:simantan/app/modules/comment/controllers/comment_controller.dart';
+import 'package:simantan/app/theme/colors.dart';
 
 class CommentView extends GetView<CommentController> {
   @override
@@ -28,35 +29,30 @@ class CommentView extends GetView<CommentController> {
               const Divider(),
               Expanded(
                 child: GetBuilder(
-                    initState: (state) {
-                      controller.getComments();
-                    },
-                    autoRemove: true,
-                    init: controller,
-                    builder: (CommentController controller) {
-                      return Obx(() {
-                        return LazyLoadScrollView(
-                          onEndOfPage: () => controller.loadNextPage(),
-                          isLoading: controller.lastPage,
-                          child: ListView.builder(
-                            itemCount: controller.comments.length,
-                            itemBuilder: (context, index) {
-                              return ListTile(
+                  init: controller,
+                  builder: (controller) {
+                    return LazyLoadScrollView(
+                      // isLoading: controller.lastPage,
+                      onEndOfPage: () => controller.loadNextPage(),
+                      child: ListView.builder(
+                        itemCount: controller.commentsByPost.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              ListTile(
                                 leading: CircleAvatar(
-                                  radius: 20,
                                   backgroundImage: NetworkImage(controller
                                       .comments[index]['user']['image']),
                                 ),
-                                title: Text(
-                                    controller.comments[index]['user']['name']),
-                                subtitle:
-                                    Text(controller.comments[index]['message']),
-                              );
-                            },
-                          ),
-                        );
-                      });
-                    }),
+                              ),
+                              const Divider(),
+                            ],
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
               ),
               Container(
                 padding: const EdgeInsets.all(10),
@@ -69,6 +65,8 @@ class CommentView extends GetView<CommentController> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: TextField(
+                        minLines: 1,
+                        maxLines: 15,
                         controller: controller.message.value,
                         decoration: const InputDecoration(
                           hintText: "Tambahkan komentar...",
@@ -81,10 +79,13 @@ class CommentView extends GetView<CommentController> {
                         onPressed: () {
                           controller.storeComment(
                             message: controller.message.value.text,
-                            postId: Get.parameters['postId'],
+                            postId: Get.parameters['post_id'],
                           );
                         },
-                        icon: Icon(Icons.send)),
+                        icon: const Icon(
+                          Icons.send,
+                          color: SchemaColor.primary,
+                        )),
                   ],
                 ),
               ),

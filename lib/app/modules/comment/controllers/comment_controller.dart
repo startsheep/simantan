@@ -10,6 +10,7 @@ class CommentController extends GetxController {
   final List<TextEditingController> messagesController =
       <TextEditingController>[].obs;
   final RxList comments = [].obs;
+  final RxList _commentsByPost = [].obs;
   final RxBool isLoading = true.obs;
 
   final _paginationFilter = LazyLoadingFilter().obs;
@@ -17,6 +18,7 @@ class CommentController extends GetxController {
   int get _limit => _paginationFilter.value.limit!;
   int get _page => _paginationFilter.value.page!;
   bool get lastPage => _lastPage.value;
+  List get commentsByPost => _commentsByPost.toList();
 
   @override
   void onInit() {
@@ -24,7 +26,8 @@ class CommentController extends GetxController {
     Get.lazyPut<CommentProvider>(() => CommentProvider());
     Get.find<CommentProvider>().onInit();
     print("Comment Controller init");
-    ever(_paginationFilter, (_) => getComments());
+    ever(_paginationFilter, (_) => getCommentsByPost());
+    changePaginationFilter(1, 15);
   }
 
   @override
@@ -48,6 +51,20 @@ class CommentController extends GetxController {
     }
   }
 
+  void getCommentsByPost() async {
+    print("getCommentsByPost");
+    print(Get.parameters['post_id']);
+    final response = await Get.find<CommentProvider>().getCommentsByPost(
+        Get.parameters['post_id'].toString(), _paginationFilter.value);
+    if (response.body['data'].length < _limit) {
+      if (response.body.isEmpty) {
+        _lastPage.value = true;
+      } else {
+        _commentsByPost.addAll(response.body['data']);
+      }
+    }
+  }
+
   void storeComment({
     String? postId,
     String? message,
@@ -56,7 +73,6 @@ class CommentController extends GetxController {
       message: message,
       postId: postId,
     );
-    print(response.statusCode);
     if (response.status.hasError) {
       Get.snackbar('Error', response.statusText.toString());
     } else {
@@ -72,7 +88,7 @@ class CommentController extends GetxController {
   }
 
   void changeTotalPerPage(int limitval) {
-    comments.clear();
+    _commentsByPost.clear();
     _lastPage.value = false;
     changePaginationFilter(1, limitval);
   }
