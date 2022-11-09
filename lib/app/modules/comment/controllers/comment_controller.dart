@@ -40,7 +40,6 @@ class CommentController extends GetxController {
 
   void getComments() async {
     print("getComments");
-
     final response =
         await Get.find<CommentProvider>().getComments(_paginationFilter.value);
 
@@ -52,8 +51,6 @@ class CommentController extends GetxController {
   }
 
   void getCommentsByPost() async {
-    print("getCommentsByPost");
-    print(Get.parameters['post_id']);
     final response = await Get.find<CommentProvider>().getCommentsByPost(
         Get.parameters['post_id'].toString(), _paginationFilter.value);
     if (response.body['data'].length < _limit) {
