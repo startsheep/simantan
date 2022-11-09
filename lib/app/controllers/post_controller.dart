@@ -6,17 +6,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:simantan/app/controllers/image_picker_controller.dart';
+import 'package:simantan/app/models/lazy_loading_filter.dart';
 import 'package:simantan/app/modules/home/providers/post_provider.dart';
 
 class PostController extends GetxController {
   //TODO: Implement PostControllerController
   RxList posts = [].obs;
-  RxList myPosts = [].obs;
+  RxList _myPosts = [].obs;
   RxList flags = [].obs;
   RxBool isLoading = true.obs;
   RxBool isUploading = false.obs;
-  RxBool isLoadMore = false.obs;
-  RxBool isExpanded = false.obs;
   RxInt flagId = 0.obs;
   Rx<XFile> image = XFile('').obs;
   final Rx<TextEditingController> descriptionController =
@@ -24,12 +23,22 @@ class PostController extends GetxController {
   final Rx<TextEditingController> searchFlag = TextEditingController().obs;
   late ImagePickerController pickerController;
 
+  final _lastPage = false.obs;
+  int get _limit => _paginationFilter.value.limit!;
+  int get _page => _paginationFilter.value.page!;
+  bool get lastPage => _lastPage.value;
+  List get myPosts => _myPosts.toList();
+  final _paginationFilter = LazyLoadingFilter().obs;
+  get paginationFilter => _paginationFilter.value;
+
   @override
   void onInit() {
-    super.onInit();
     Get.lazyPut<PostProvider>(() => PostProvider());
     Get.lazyPut<ImagePickerController>(() => ImagePickerController());
     pickerController = Get.find<ImagePickerController>();
+    ever(_paginationFilter, (_) => getMyPosts());
+    changePaginationFilter(1, 15);
+    super.onInit();
   }
 
   @override
@@ -62,25 +71,25 @@ class PostController extends GetxController {
 
   void getMyPosts() async {
     print('getMyPosts');
-    final response = await Get.find<PostProvider>().getPostsByUser();
+    final response =
+        await Get.find<PostProvider>().getPostsByUser(_paginationFilter.value);
     if (response.statusCode == 200) {
-      final _posts = json.encode(response.body['data']);
-      myPosts.value = json.decode(_posts);
-      print(myPosts);
-    } else {
-      myPosts.value = [];
+      if (response.body['data'].length < _limit) {
+        _lastPage.value = true;
+      }
+      _myPosts.addAll(response.body['data']);
     }
+
+    //   myPosts.value = [];
   }
 
   void storePost() async {
     isUploading.value = true;
-    ;
     final response = await Get.find<PostProvider>().storePost(
       description: descriptionController.value.text,
       hashtagId: flagId.value,
       file: File(image.value.path),
     );
-    print(response.body);
     if (response.statusCode == 201) {
       isUploading.value = false;
       fetchPosts();
@@ -88,11 +97,8 @@ class PostController extends GetxController {
   }
 
   void storeFlag() async {
-    print("store flag");
     final response =
         await Get.find<PostProvider>().storeFlag(searchFlag.value.text);
-    print(response.statusCode);
-    print(response.body);
     if (response.statusCode == 201) {
       fetchFlags(searchFlag.value.text);
     }
@@ -100,7 +106,6 @@ class PostController extends GetxController {
 
   void deletePost(int id) async {
     final response = await Get.find<PostProvider>().deletePost(id);
-    print(response.statusCode);
     if (response.statusCode == 200) {
       fetchPosts();
     }
@@ -108,9 +113,22 @@ class PostController extends GetxController {
 
   void downloadImage(String path) async {
     final response = await Get.find<PostProvider>().downloadImage(path);
-    print(response.statusCode);
-    print(response.body);
   }
+
+  void changePaginationFilter(int page, int limit) {
+    _paginationFilter.update((val) {
+      val!.page = page;
+      val.limit = limit;
+    });
+  }
+
+  void changeTotalPerPage(int limitVal) {
+    _myPosts.clear();
+    _lastPage.value = false;
+    changePaginationFilter(1, limitVal);
+  }
+
+  void loadNextPage() => changePaginationFilter(_page + 1, _limit);
 
   String randomStringWord() {
     var random = Random();
