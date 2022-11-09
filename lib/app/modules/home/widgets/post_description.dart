@@ -1,3 +1,4 @@
+import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:simantan/app/modules/comment/controllers/comment_controller.dart';
@@ -34,14 +35,22 @@ class PostDescription extends StatelessWidget {
           ),
           const SizedBox(height: 5),
           // ,ake description collapse when many text
-          Text(
+          ExpandableText(
             description!,
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
+            expandText: "Selengkapnya",
+            collapseText: "Sembunyikan",
+            linkStyle: TextStyle(
+              color: SchemaColor.primary.withOpacity(0.5),
+              fontWeight: FontWeight.bold,
+            ),
+            animation: true,
+            animationDuration: const Duration(milliseconds: 500),
+            maxLines: 2,
             style: const TextStyle(
               color: Colors.black,
               fontSize: 14,
             ),
+            // expanded: true,
           ),
           // make hastag clickable
           const SizedBox(height: 5),

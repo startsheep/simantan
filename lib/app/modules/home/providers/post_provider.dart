@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:simantan/app/models/lazy_loading_filter.dart';
 import 'package:simantan/app/services/auth_services.dart';
 
 class PostProvider extends GetConnect {
@@ -35,10 +36,14 @@ class PostProvider extends GetConnect {
   Future<Response> getPosts() => get('post', headers: {
         'Authorization': 'Bearer ' + AuthServices.getToken,
       });
-  Future<Response> getPostsByUser() => get('post', headers: {
+  Future<Response> getPostsByUser(LazyLoadingFilter filter) =>
+      get('post', headers: {
         'Authorization': 'Bearer ' + AuthServices.getToken,
       }, query: {
         'user': AuthServices.getUserId.toString(),
+        // 'per_page': '20'
+        'per_page': filter.limit.toString(),
+        'page': filter.page.toString()
       });
   Future<Response> storeFlag(String flag) {
     return post('flag', {

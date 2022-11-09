@@ -14,7 +14,7 @@ class ProfileController extends GetxController {
     Get.lazyPut<PostController>(() => PostController());
     postController = Get.find<PostController>();
     authController = Get.find<AuthController>();
-    postController.getMyPosts();
+    postController.onInit();
   }
 
   @override
