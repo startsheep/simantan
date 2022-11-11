@@ -11,6 +11,7 @@ abstract class Routes {
   static const DETAIL_POST = _Paths.DETAIL_POST;
   static const COMMENT = _Paths.COMMENT;
   static const TEST = _Paths.TEST;
+  static const SEARCH = _Paths.SEARCH;
 }
 
 abstract class _Paths {
@@ -23,4 +24,5 @@ abstract class _Paths {
   static const DETAIL_POST = '/detail-post';
   static const COMMENT = '/comment';
   static const TEST = '/test';
+  static const SEARCH = '/search';
 }

@@ -8,12 +8,19 @@ import 'package:simantan/app/modules/home/views/home_view.dart';
 import 'package:simantan/app/modules/post/views/post_view.dart';
 import 'package:simantan/app/modules/profile/controllers/profile_controller.dart';
 import 'package:simantan/app/modules/profile/views/profile_view.dart';
+import 'package:simantan/app/modules/search/controllers/search_controller.dart';
+import 'package:simantan/app/modules/search/views/search_view.dart';
 
 class CoreController extends GetxController {
   //TODO: Implement CoreController
 
   RxInt currentPage = 0.obs;
-  List<Widget> views = [HomeView(), PostView(), ProfileView(), CommentView()];
+  List<Widget> views = [
+    HomeView(),
+    PostView(),
+    SearchView(),
+    ProfileView(),
+  ];
 
   // run controller per page
   void removeController() {
@@ -26,6 +33,9 @@ class CoreController extends GetxController {
       Get.delete<PostController>();
     }
     if (currentPage.value != 2) {
+      Get.delete<SearchController>();
+    }
+    if (currentPage.value != 3) {
       Get.delete<ProfileController>();
     }
   }
@@ -42,7 +52,10 @@ class CoreController extends GetxController {
         Get.find<PostController>().fetchFlags("");
         break;
       case 2:
+        Get.lazyPut<SearchController>(() => SearchController());
         // Get.find<AuthController>().onInit();
+        break;
+      case 3:
         Get.lazyPut<ProfileController>(() => ProfileController());
         Get.find<ProfileController>().onInit();
         break;

@@ -41,7 +41,6 @@ class PostProvider extends GetConnect {
         'Authorization': 'Bearer ' + AuthServices.getToken,
       }, query: {
         'user': AuthServices.getUserId.toString(),
-        // 'per_page': '20'
         'per_page': filter.limit.toString(),
         'page': filter.page.toString()
       });
@@ -59,13 +58,14 @@ class PostProvider extends GetConnect {
     });
   }
 
-  Future<Response> getFlags(String search) => get(
+  Future<Response> getFlags({String? search}) => get(
         'flag',
         headers: {
           'Authorization': 'Bearer ' + AuthServices.getToken,
         },
         query: {
           'search': search,
+          'per_page': '',
         },
       );
 
@@ -73,5 +73,17 @@ class PostProvider extends GetConnect {
   Future<Response> downloadImage(String path) async {
     final response = await get(path);
     return response;
+  }
+
+  Future<Response> likePost(int id) {
+    return post('like/$id', {}, headers: {
+      'Authorization': 'Bearer ' + AuthServices.getToken,
+    });
+  }
+
+  Future<Response> getLike(int id) {
+    return get('like/$id', headers: {
+      'Authorization': 'Bearer ' + AuthServices.getToken,
+    });
   }
 }
