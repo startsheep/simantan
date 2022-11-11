@@ -14,7 +14,6 @@ class HomeController extends GetxController {
     Get.lazyPut<CommentController>(() => CommentController());
     commentController = Get.find<CommentController>();
     postController = Get.find<PostController>();
-    commentController.onInit();
     postController.onInit();
     postController.fetchPosts();
   }
