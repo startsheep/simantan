@@ -14,7 +14,8 @@ class ProfileController extends GetxController {
     Get.lazyPut<PostController>(() => PostController());
     postController = Get.find<PostController>();
     authController = Get.find<AuthController>();
-    postController.onInit();
+    ever(postController.paginationFilter, (_) => postController.getMyPosts());
+    postController.changePaginationFilter(1, 15);
   }
 
   @override
