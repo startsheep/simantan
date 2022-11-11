@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:simantan/app/controllers/image_picker_controller.dart';
@@ -24,26 +25,20 @@ class PostController extends GetxController {
   late ImagePickerController pickerController;
 
   final _lastPage = false.obs;
-  int get _limit => _paginationFilter.value.limit!;
-  int get _page => _paginationFilter.value.page!;
+  int get _limit => paginationFilter.value.limit!;
+  int get _page => paginationFilter.value.page!;
   bool get lastPage => _lastPage.value;
   List get myPosts => _myPosts.toList();
-  final _paginationFilter = LazyLoadingFilter().obs;
-  get paginationFilter => _paginationFilter.value;
+  final paginationFilter = LazyLoadingFilter().obs;
+  // get paginationFilter => paginationFilter.value;
 
   @override
   void onInit() {
     Get.lazyPut<PostProvider>(() => PostProvider());
     Get.lazyPut<ImagePickerController>(() => ImagePickerController());
     pickerController = Get.find<ImagePickerController>();
-    ever(_paginationFilter, (_) => getMyPosts());
-    changePaginationFilter(1, 15);
-    super.onInit();
-  }
 
-  @override
-  void onReady() {
-    super.onReady();
+    super.onInit();
   }
 
   @override
@@ -51,7 +46,7 @@ class PostController extends GetxController {
 
   Future<List> fetchFlags(String search) async {
     final response =
-        await Get.find<PostProvider>().getFlags(searchFlag.value.text);
+        await Get.find<PostProvider>().getFlags(search: searchFlag.value.text);
     if (response.statusCode == 200) {
       flags.assignAll(response.body['data']);
     }
@@ -69,15 +64,35 @@ class PostController extends GetxController {
     }
   }
 
+  void likePost(id) async {
+    print(id);
+    final response = await Get.find<PostProvider>().likePost(id);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      fetchPosts();
+    }
+  }
+
+  Future<bool> isLiked(id) async {
+    bool isLiked = false;
+    final response = await Get.find<PostProvider>().getLike(id);
+    if (response.statusCode == 200) {
+      isLiked = response.body['data'] == 1 ? true : false;
+    }
+    return isLiked;
+  }
+
   void getMyPosts() async {
     print('getMyPosts');
     final response =
-        await Get.find<PostProvider>().getPostsByUser(_paginationFilter.value);
+        await Get.find<PostProvider>().getPostsByUser(paginationFilter.value);
     if (response.statusCode == 200) {
-      if (response.body['data'].length < _limit) {
+      if (response.body['data'].length == 0) {
         _lastPage.value = true;
+      } else {
+        _lastPage.value = false;
+        _myPosts.addAll(response.body['data']);
       }
-      _myPosts.addAll(response.body['data']);
     }
 
     //   myPosts.value = [];
@@ -93,6 +108,8 @@ class PostController extends GetxController {
     if (response.statusCode == 201) {
       isUploading.value = false;
       fetchPosts();
+    } else {
+      isUploading.value = false;
     }
   }
 
@@ -111,12 +128,8 @@ class PostController extends GetxController {
     }
   }
 
-  void downloadImage(String path) async {
-    final response = await Get.find<PostProvider>().downloadImage(path);
-  }
-
   void changePaginationFilter(int page, int limit) {
-    _paginationFilter.update((val) {
+    paginationFilter.update((val) {
       val!.page = page;
       val.limit = limit;
     });
@@ -137,5 +150,9 @@ class PostController extends GetxController {
       return String.fromCharCode(random.nextInt(26) + 97);
     });
     return word.join();
+  }
+
+  void onSuccessPost() {
+    // show
   }
 }
