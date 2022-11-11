@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:simantan/app/controllers/post_controller.dart';
 import 'package:simantan/app/data/source_dummy.dart';
 import 'package:simantan/app/modules/home/widgets/post_actions.dart';
@@ -99,7 +100,9 @@ class HomeView extends GetView<HomeController> {
                             PostContent(
                               contentUrl: post['image'],
                             ),
-                            const PostActions(),
+                            PostActions(
+                              postId: post['id'],
+                            ),
                             PostDescription(
                               username: post['user']['name'],
                               description: controller
@@ -172,6 +175,17 @@ class HomeView extends GetView<HomeController> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildListPost() {
+    final _pagingController = PagingController<int, dynamic>(firstPageKey: 1);
+    return PagedListView(
+      pagingController: _pagingController,
+      builderDelegate:
+          PagedChildBuilderDelegate(itemBuilder: (context, item, index) {
+        return Text("Hallo");
+      }),
     );
   }
 }
