@@ -12,7 +12,7 @@ import 'package:simantan/app/modules/home/providers/post_provider.dart';
 
 class PostController extends GetxController {
   //TODO: Implement PostControllerController
-  RxList posts = [].obs;
+  RxList _posts = [].obs;
   RxList _myPosts = [].obs;
   RxList flags = [].obs;
   RxBool isLoading = true.obs;
@@ -29,6 +29,7 @@ class PostController extends GetxController {
   int get _page => paginationFilter.value.page!;
   bool get lastPage => _lastPage.value;
   List get myPosts => _myPosts.toList();
+  List get posts => _posts.toList();
   final paginationFilter = LazyLoadingFilter().obs;
   // get paginationFilter => paginationFilter.value;
 
@@ -54,13 +55,16 @@ class PostController extends GetxController {
   }
 
   void fetchPosts() async {
-    final response = await Get.find<PostProvider>().getPosts();
+    final response =
+        await Get.find<PostProvider>().getPosts(paginationFilter.value);
     if (response.statusCode == 200) {
       isLoading.value = false;
-      posts.value = json.decode(json.encode(response.body['data']));
-    } else {
-      isLoading.value = false;
-      posts.value = [];
+      if (response.body['data'].length == 0) {
+        _lastPage.value = true;
+      } else {
+        _lastPage.value = false;
+        _posts.addAll(response.body['data']);
+      }
     }
   }
 
@@ -105,6 +109,7 @@ class PostController extends GetxController {
       hashtagId: flagId.value,
       file: File(image.value.path),
     );
+    print(response.statusCode);
     if (response.statusCode == 201) {
       isUploading.value = false;
       fetchPosts();
