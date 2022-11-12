@@ -6,7 +6,7 @@ class CommentProvider extends GetConnect {
   @override
   void onInit() {
     // httpClient.defaultDecoder = (map) => Comment.fromJson(map);
-    httpClient.baseUrl = 'http://simantan.nataysa.com/api/';
+    httpClient.baseUrl = 'http://simantan.startsheep.my.id/';
   }
 
   Future<Response> storeComment({

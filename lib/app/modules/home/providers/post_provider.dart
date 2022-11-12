@@ -10,7 +10,7 @@ import 'package:simantan/app/services/auth_services.dart';
 class PostProvider extends GetConnect {
   @override
   void onInit() {
-    httpClient.baseUrl = 'http://simantan.nataysa.com/api/';
+    httpClient.baseUrl = 'http://simantan.startsheep.my.id/';
   }
 
   // get posts
@@ -33,8 +33,11 @@ class PostProvider extends GetConnect {
     });
   }
 
-  Future<Response> getPosts() => get('post', headers: {
+  Future<Response> getPosts(LazyLoadingFilter filter) => get('post', headers: {
         'Authorization': 'Bearer ' + AuthServices.getToken,
+      }, query: {
+        'page': filter.page.toString(),
+        'limit': filter.limit.toString(),
       });
   Future<Response> getPostsByUser(LazyLoadingFilter filter) =>
       get('post', headers: {

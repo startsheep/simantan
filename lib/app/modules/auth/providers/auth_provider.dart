@@ -6,7 +6,7 @@ import 'package:simantan/app/services/auth_services.dart';
 class AuthProvider extends GetConnect {
   @override
   void onInit() {
-    httpClient.baseUrl = 'http://simantan.nataysa.com/api/';
+    httpClient.baseUrl = 'http://simantan.startsheep.my.id/';
 
     // set headers
     // httpClient.addAuthenticator((request) => request);
