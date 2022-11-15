@@ -18,7 +18,7 @@ class CommentController extends GetxController {
   int get _limit => _paginationFilter.value.limit!;
   int get _page => _paginationFilter.value.page!;
   bool get lastPage => _lastPage.value;
-  List get commentsByPost => _commentsByPost.toList();
+  List get commentsByPost => _commentsByPost.toList().obs;
 
   @override
   void onInit() {
@@ -51,12 +51,19 @@ class CommentController extends GetxController {
   }
 
   void getCommentsByPost() async {
+    print("getCommentsByPost");
     final response = await Get.find<CommentProvider>().getCommentsByPost(
         Get.parameters['post_id'].toString(), _paginationFilter.value);
-    if (response.body['data'].length < _limit) {
-      if (response.body.isEmpty) {
+
+    // print(response.body);
+    if (response.statusCode == 200) {
+      if (response.body['data'].length == 0) {
         _lastPage.value = true;
+        print("lastPage");
       } else {
+        print("not lastPage");
+        _lastPage.value = false;
+        refresh();
         _commentsByPost.addAll(response.body['data']);
       }
     }
@@ -74,6 +81,7 @@ class CommentController extends GetxController {
       Get.snackbar('Error', response.statusText.toString());
     } else {
       Get.snackbar('Success', response.statusText.toString());
+      getCommentsByPost();
     }
   }
 
