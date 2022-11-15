@@ -33,8 +33,8 @@ class AuthController extends GetxController {
     await Get.find<AuthProvider>()
         .login(usernameController.text, passwordController.text)
         .then((value) {
-      // print(value.body['data']['token']);
-
+      print(value.body);
+      print(value.statusCode);
       if (value.statusCode == 200) {
         isAuth.value = true;
         isSubmit.value = false;
