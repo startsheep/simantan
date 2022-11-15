@@ -8,7 +8,9 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:simantan/app/controllers/image_picker_controller.dart';
 import 'package:simantan/app/models/lazy_loading_filter.dart';
+import 'package:simantan/app/modules/core/controllers/core_controller.dart';
 import 'package:simantan/app/modules/home/providers/post_provider.dart';
+import 'package:simantan/app/theme/colors.dart';
 
 class PostController extends GetxController {
   //TODO: Implement PostControllerController
@@ -58,6 +60,7 @@ class PostController extends GetxController {
     final response =
         await Get.find<PostProvider>().getPosts(paginationFilter.value);
     if (response.statusCode == 200) {
+      print(response.body['data'].length);
       isLoading.value = false;
       if (response.body['data'].length == 0) {
         _lastPage.value = true;
@@ -98,8 +101,6 @@ class PostController extends GetxController {
         _myPosts.addAll(response.body['data']);
       }
     }
-
-    //   myPosts.value = [];
   }
 
   void storePost() async {
@@ -109,9 +110,14 @@ class PostController extends GetxController {
       hashtagId: flagId.value,
       file: File(image.value.path),
     );
-    print(response.statusCode);
+
     if (response.statusCode == 201) {
       isUploading.value = false;
+      // showSuccessSnackbar();
+      Get.find<CoreController>().currentPage.value = 0;
+      Get.snackbar('Berhasil', 'Sudah di posting yaa',
+          backgroundColor: SchemaColor.success);
+
       fetchPosts();
     } else {
       isUploading.value = false;
@@ -119,9 +125,11 @@ class PostController extends GetxController {
   }
 
   void storeFlag() async {
+    print('storeFlag');
     final response =
         await Get.find<PostProvider>().storeFlag(searchFlag.value.text);
-    if (response.statusCode == 201) {
+    print(response.statusCode);
+    if (response.statusCode == 200) {
       fetchFlags(searchFlag.value.text);
     }
   }
