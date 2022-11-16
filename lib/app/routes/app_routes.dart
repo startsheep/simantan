@@ -22,7 +22,7 @@ abstract class _Paths {
   static const PROFILE = '/profile';
   static const POST = '/post';
   static const DETAIL_POST = '/detail-post';
-  static const COMMENT = '/comment';
   static const TEST = '/test';
   static const SEARCH = '/search';
+  static const COMMENT = '/comment';
 }

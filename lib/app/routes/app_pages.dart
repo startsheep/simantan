@@ -56,12 +56,6 @@ class AppPages {
       binding: PostBinding(),
     ),
     GetPage(
-      transition: Transition.leftToRightWithFade,
-      name: _Paths.COMMENT,
-      page: () => CommentView(),
-      binding: CommentBinding(),
-    ),
-    GetPage(
       name: _Paths.TEST,
       page: () => const TestView(),
       binding: TestBinding(),
@@ -70,6 +64,11 @@ class AppPages {
       name: _Paths.SEARCH,
       page: () => SearchView(),
       binding: SearchBinding(),
+    ),
+    GetPage(
+      name: _Paths.COMMENT,
+      page: () => const CommentView(),
+      binding: CommentBinding(),
     ),
   ];
 }
