@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:simantan/app/modules/home/providers/post_provider.dart';
 
@@ -11,6 +12,10 @@ class SearchController extends GetxController {
   final RxList flags = [].obs;
   final RxList posts = [].obs;
 
+  final Rx<TextEditingController> searchController =
+      TextEditingController().obs;
+  RxString searchText = ''.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -21,7 +26,9 @@ class SearchController extends GetxController {
 
   void fetchFlags() async {
     isLoading.value = true;
-    final response = await Get.find<PostProvider>().getFlags();
+    print("fetchFlags");
+    final response = await Get.find<PostProvider>()
+        .getFlags(search: searchController.value.text);
     if (response.statusCode == 200) {
       isLoading.value = false;
       flags.assignAll(response.body['data']);
@@ -41,6 +48,9 @@ class SearchController extends GetxController {
   @override
   void onReady() {
     super.onReady();
+
+    debounce(searchText, (_) => fetchFlags(),
+        time: Duration(milliseconds: 500));
   }
 
   @override

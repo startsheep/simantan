@@ -14,59 +14,64 @@ class SearchView extends GetView<SearchController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Obx(() {
-        return SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ReuseTextField(
-                  suffixIcon: Icons.search,
-                  hintText: "Cari",
-                ),
-                Divider(),
-                controller.flags.length > 0
-                    ? ChipsChoice<int>.single(
-                        // spinnerColor: SchemaColor.primary,
-                        leading: Text("Tagar",
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold)),
-                        value: controller.selectedChip.value,
-                        onChanged: (val) => {
-                          controller.selectedChip.value = val,
-                        },
-                        choiceItems: C2Choice.listFrom<int, dynamic>(
-                          source: controller.flags,
-                          value: (i, v) => i,
-                          label: (i, v) => '#' + v['name'],
-                        ),
-                        choiceBuilder: (item, i) {
-                          return Container(
-                            margin: EdgeInsets.only(right: 5, left: 2),
-                            child: ChoiceChip(
-                              label: Text(item.label,
-                                  style: TextStyle(color: Colors.white)),
-                              selected: item.selected,
-                              onSelected: (selected) {
-                                controller.selectedChip.value = item.value;
-                              },
-                              backgroundColor: Colors.black38,
-                              selectedColor: SchemaColor.primary,
-                            ),
-                          );
-                        },
-                      )
-                    : Container(),
-                // Expanded(child: ListView()),
-                _buildUser()
-              ],
-            ),
-          ),
-        );
-      }),
-    );
+        body: SafeArea(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: Obx(() {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 10,
+              ),
+              ReuseTextField(
+                controller: controller.searchController.value,
+                suffixIcon: Icons.search,
+                hintText: "Cari",
+                onChanged: (value) => controller.searchText.value = value,
+              ),
+              Divider(),
+
+              controller.flags.length > 0
+                  ? ChipsChoice<int>.single(
+                      // spinnerColor: SchemaColor.primary,
+                      leading: Text("Tagar",
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold)),
+                      value: controller.selectedChip.value,
+                      onChanged: (val) => {
+                        controller.selectedChip.value = val,
+                      },
+                      choiceItems: C2Choice.listFrom<int, dynamic>(
+                        source: controller.flags,
+                        value: (i, v) => i,
+                        label: (i, v) => '#' + v['name'],
+                      ),
+                      choiceBuilder: (item, i) {
+                        return Container(
+                          margin: EdgeInsets.only(right: 5, left: 2),
+                          child: ChoiceChip(
+                            label: Text(item.label,
+                                style: TextStyle(color: Colors.white)),
+                            selected: item.selected,
+                            onSelected: (selected) {
+                              controller.selectedChip.value = item.value;
+                            },
+                            backgroundColor: Colors.black38,
+                            selectedColor: SchemaColor.primary,
+                          ),
+                        );
+                      },
+                    )
+                  : Container(),
+              // Expanded(child: ListView()),
+              // _buildUser()
+            ],
+          );
+        }),
+      ),
+    ));
   }
 
   Widget _buildUser() {
