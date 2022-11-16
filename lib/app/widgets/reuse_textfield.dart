@@ -13,7 +13,7 @@ class ReuseTextField extends StatelessWidget {
 
   final IconData? icon;
   final TextInputType? keyboardType;
-  final Function? onChanged;
+  final ValueChanged<String>? onChanged;
   final Function? onTap;
   final Function? onSubmitted;
 
@@ -46,6 +46,7 @@ class ReuseTextField extends StatelessWidget {
       minLines: minLines,
       maxLines: maxLines,
       validator: validator,
+      onChanged: onChanged,
       controller: controller,
       obscureText: obscureText ?? false,
       decoration: InputDecoration(
