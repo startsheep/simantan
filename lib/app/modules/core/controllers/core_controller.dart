@@ -49,7 +49,6 @@ class CoreController extends GetxController {
         break;
       case 1:
         Get.lazyPut<PostController>(() => PostController());
-        Get.find<PostController>().fetchFlags("");
         break;
       case 2:
         Get.lazyPut<SearchController>(() => SearchController());
