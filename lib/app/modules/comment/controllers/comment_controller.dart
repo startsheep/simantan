@@ -26,13 +26,14 @@ class CommentController extends GetxController {
     Get.lazyPut<CommentProvider>(() => CommentProvider());
     Get.find<CommentProvider>().onInit();
     print("Comment Controller init");
-    ever(_paginationFilter, (_) => getCommentsByPost());
-    changePaginationFilter(1, 15);
+    getCommentsByPost();
   }
 
   @override
   void onReady() {
     super.onReady();
+    ever(_paginationFilter, (_) => getCommentsByPost());
+    changePaginationFilter(1, 10);
   }
 
   @override
@@ -53,17 +54,16 @@ class CommentController extends GetxController {
   void getCommentsByPost() async {
     print("getCommentsByPost");
     final response = await Get.find<CommentProvider>().getCommentsByPost(
-        Get.parameters['post_id'].toString(), _paginationFilter.value);
+        Get.parameters['postId'].toString(), _paginationFilter.value);
 
-    // print(response.body);
+    print(response.body);
     if (response.statusCode == 200) {
       if (response.body['data'].length == 0) {
         _lastPage.value = true;
         print("lastPage");
       } else {
         print("not lastPage");
-        _lastPage.value = false;
-        refresh();
+
         _commentsByPost.addAll(response.body['data']);
       }
     }
@@ -71,12 +71,13 @@ class CommentController extends GetxController {
 
   void storeComment({
     String? postId,
-    String? message,
   }) async {
+    print("storeComment");
     final response = await Get.find<CommentProvider>().storeComment(
-      message: message,
+      message: message.value.text,
       postId: postId,
     );
+    print(response.body);
     if (response.status.hasError) {
       Get.snackbar('Error', response.statusText.toString());
     } else {
