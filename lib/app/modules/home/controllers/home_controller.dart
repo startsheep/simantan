@@ -1,26 +1,27 @@
 import 'package:get/get.dart';
-import 'package:simantan/app/modules/comment/controllers/comment_controller.dart';
+// import 'package:simantan/app/modules/comment/controllers/comment_controller.dart';
 import 'package:simantan/app/controllers/post_controller.dart';
 
 class HomeController extends GetxController {
   //TODO: Implement HomeController
 
   late PostController postController;
-  late CommentController commentController;
+  // late CommentController commentController;
   @override
   void onInit() {
     super.onInit();
     Get.lazyPut<PostController>(() => PostController());
-    Get.lazyPut<CommentController>(() => CommentController());
-    commentController = Get.find<CommentController>();
+    // Get.lazyPut<CommentController>(() => CommentController());
+    // commentController = Get.find<CommentController>();
     postController = Get.find<PostController>();
     postController.onInit();
-    postController.fetchPosts();
+    ever(postController.paginationFilter, (_) => postController.fetchPosts());
+    postController.changePaginationFilter(1, 3);
   }
 
   @override
   void onReady() {
-    Get.lazyPut<CommentController>(() => CommentController());
+    // Get.lazyPut<CommentController>(() => CommentController());
     Get.lazyPut<PostController>(() => PostController());
     super.onReady();
     postController.fetchPosts();

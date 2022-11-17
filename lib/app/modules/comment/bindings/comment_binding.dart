@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
-import 'package:simantan/app/modules/comment/controllers/comment_controller.dart';
+
+import '../controllers/comment_controller.dart';
 
 class CommentBinding extends Bindings {
   @override
