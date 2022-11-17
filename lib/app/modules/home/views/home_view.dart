@@ -74,8 +74,7 @@ class HomeView extends GetView<HomeController> {
                       itemCount: controller.postController.posts.length,
                       itemBuilder: (context, index) {
                         final post = controller.postController.posts[index];
-                        controller.commentController.messagesController
-                            .add(TextEditingController());
+
                         return Container(
                           margin: const EdgeInsets.symmetric(
                               vertical: 5, horizontal: 10),
@@ -143,9 +142,6 @@ class HomeView extends GetView<HomeController> {
                                       Expanded(
                                         child: TextField(
                                           // key:  ,
-                                          controller: controller
-                                              .commentController
-                                              .messagesController[index],
                                           decoration: const InputDecoration(
                                             border: InputBorder.none,
                                             hintText: "Berkomentar",
@@ -156,17 +152,17 @@ class HomeView extends GetView<HomeController> {
                                       ),
                                       IconButton(
                                         onPressed: () {
-                                          controller
-                                              .commentController
-                                              .storeComment(
-                                                  message: controller
-                                                      .commentController
-                                                      .messagesController[index]
-                                                      .text,
-                                                  postId: controller
-                                                      .postController
-                                                      .posts[index]['id']
-                                                      .toString());
+                                          // controller
+                                          //     .commentController
+                                          //     .storeComment(
+                                          //         message: controller
+                                          //             .commentController
+                                          //             .messagesController[index]
+                                          //             .text,
+                                          //         postId: controller
+                                          //             .postController
+                                          //             .posts[index]['id']
+                                          //             .toString());
                                         },
                                         icon: const Icon(
                                           Icons.send_rounded,
