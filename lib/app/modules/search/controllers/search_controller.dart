@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:simantan/app/modules/home/providers/post_provider.dart';
 
+import '../../../models/lazy_loading_filter.dart';
+
 class SearchController extends GetxController {
   //TODO: Implement SearchController
   RxBool isLoading = false.obs;
@@ -10,11 +12,23 @@ class SearchController extends GetxController {
   final RxInt selectedChip = 0.obs;
   final RxInt selectedChipCategory = 0.obs;
   final RxList flags = [].obs;
-  final RxList posts = [].obs;
-
+  final RxList _posts = [].obs;
+  final RxList users = [].obs;
+  final RxList tabs = [
+    {'name': 'Tagar', 'value': 0},
+    {'name': 'Postingan', 'value': 1},
+    {'name': 'Pengguna', 'value': 2},
+  ].obs;
+  final RxInt selectedTab = 0.obs;
   final Rx<TextEditingController> searchController =
       TextEditingController().obs;
-  RxString searchText = ''.obs;
+  RxString searchText = ' '.obs;
+  final _lastPage = false.obs;
+  int get _limit => paginationFilter.value.limit!;
+  int get _page => paginationFilter.value.page!;
+  bool get lastPage => _lastPage.value;
+  List get posts => _posts.toList();
+  final paginationFilter = LazyLoadingFilter().obs;
 
   @override
   void onInit() {
@@ -26,7 +40,6 @@ class SearchController extends GetxController {
 
   void fetchFlags() async {
     isLoading.value = true;
-    print("fetchFlags");
     final response = await Get.find<PostProvider>()
         .getFlags(search: searchController.value.text);
     if (response.statusCode == 200) {
@@ -37,12 +50,25 @@ class SearchController extends GetxController {
 
   void fetchPosts() async {
     isLoading.value = true;
-    // final response = await Get.find<PostProvider>().getPosts(
-    //     selectedFlag.value.toString(), selectedCategory.value.toString());
-    // if (response.statusCode == 200) {
-    //   isLoading.value = false;
-    //   posts.assignAll(response.body['data']);
-    // }
+    print("fetchPosts");
+    // refresh();
+    update();
+    final response = await Get.find<PostProvider>().getPosts(
+      paginationFilter.value,
+      search: searchText.value,
+      flagId: selectedFlag.value,
+    );
+    print(response.statusCode);
+    print(response.body);
+    if (response.statusCode == 200) {
+      isLoading.value = false;
+      if (response.body['data'].length == 0) {
+        _lastPage.value = true;
+      } else {
+        _lastPage.value = false;
+        _posts.assignAll(response.body['data']);
+      }
+    }
   }
 
   @override
@@ -51,10 +77,31 @@ class SearchController extends GetxController {
 
     debounce(searchText, (_) => fetchFlags(),
         time: Duration(milliseconds: 500));
+    debounce(searchText, (_) => fetchPosts(),
+        time: Duration(milliseconds: 500));
+    if (_posts.length > 0) {
+      ever(paginationFilter, (_) => fetchPosts());
+    }
+    changePaginationFilter(1, 10);
   }
 
   @override
   void onClose() {
     super.onClose();
   }
+
+  void changePaginationFilter(int page, int limit) {
+    paginationFilter.update((val) {
+      val!.page = page;
+      val.limit = limit;
+    });
+  }
+
+  void changeTotalPerPage(int limitVal) {
+    _posts.clear();
+    _lastPage.value = false;
+    changePaginationFilter(1, limitVal);
+  }
+
+  void loadNextPage() => changePaginationFilter(_page + 1, _limit);
 }
