@@ -10,7 +10,7 @@ import 'package:simantan/app/services/auth_services.dart';
 class PostProvider extends GetConnect {
   @override
   void onInit() {
-    httpClient.baseUrl = 'http://simantan.startsheep.my.id/';
+    httpClient.baseUrl = 'http://simantan.startsheep.my.id/api/';
   }
 
   // get posts
@@ -33,17 +33,25 @@ class PostProvider extends GetConnect {
     });
   }
 
-  Future<Response> getPosts(LazyLoadingFilter filter) => get('post', headers: {
+  Future<Response> getPosts(
+    LazyLoadingFilter filter, {
+    String? flagId,
+    String? search,
+  }) =>
+      get('post', headers: {
         'Authorization': 'Bearer ' + AuthServices.getToken,
       }, query: {
+        'search': search,
+        'flag_id': flagId,
         'page': filter.page.toString(),
-        'limit': filter.limit.toString(),
+        'per_page': filter.limit.toString(),
       });
   Future<Response> getPostsByUser(LazyLoadingFilter filter) =>
       get('post', headers: {
         'Authorization': 'Bearer ' + AuthServices.getToken,
       }, query: {
         'user': AuthServices.getUserId.toString(),
+        // 'flag_id': fla,
         'per_page': filter.limit.toString(),
         'page': filter.page.toString()
       });
@@ -85,7 +93,7 @@ class PostProvider extends GetConnect {
   }
 
   Future<Response> getLike(int id) {
-    return get('like/$id', headers: {
+    return get('post/like/count/$id', headers: {
       'Authorization': 'Bearer ' + AuthServices.getToken,
     });
   }

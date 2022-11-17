@@ -1,7 +1,7 @@
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:simantan/app/modules/comment/controllers/comment_controller.dart';
+// import 'package:simantan/app/modules/comment/controllers/comment_controller.dart';
 import 'package:simantan/app/routes/app_pages.dart';
 import 'package:simantan/app/theme/colors.dart';
 
@@ -57,8 +57,7 @@ class PostDescription extends StatelessWidget {
           // see comment like instagram comment with gesture detector
           InkWell(
             onTap: () {
-              Get.toNamed(Routes.COMMENT,
-                  parameters: {'post_id': postId!}, preventDuplicates: false);
+              Get.toNamed(Routes.COMMENT, parameters: {'postId': postId!});
             },
             child: Text(
               "Lihat komentar",

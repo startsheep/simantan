@@ -12,6 +12,34 @@ class PostView extends GetView<PostController> {
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
     return Scaffold(
+      // background gradient
+      // make drawwer
+
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: const <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text('Drawer Header'),
+            ),
+            ListTile(
+              leading: Icon(Icons.message),
+              title: Text('Messages'),
+            ),
+            ListTile(
+              leading: Icon(Icons.account_circle),
+              title: Text('Profile'),
+            ),
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text('Settings'),
+            ),
+          ],
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -41,23 +69,23 @@ class PostView extends GetView<PostController> {
 
                     // Button Unggah
                     const Divider(),
-                    ReuseDropDownSearch(
-                      title: "Tagar",
-                      asyncItems: controller
-                          .fetchFlags(controller.searchFlag.value.text),
-                      onChange: (val) {
-                        controller.flagId.value = val["id"];
-                      },
-                      itemAsString: (item) {
-                        return item['name'].toString();
-                      },
-                      filterFn: (item, text) {
-                        return item['name']
-                            .toString()
-                            .toLowerCase()
-                            .contains(text.toLowerCase());
-                      },
-                    ),
+                    Obx(() {
+                      return ReuseDropDownSearch(
+                        title: "Tagar",
+                        onChange: (val) {
+                          controller.flagId.value = val["id"];
+                        },
+                        itemAsString: (item) {
+                          return item['name'].toString();
+                        },
+                        items: controller.flags.value,
+                        onSearch: (value) {
+                          // print(value);
+                          controller.searchFlagText.value = value;
+                          print(controller.searchFlagText.value);
+                        },
+                      );
+                    }),
                     // create dropdown manualy with search
 
                     const Divider(),

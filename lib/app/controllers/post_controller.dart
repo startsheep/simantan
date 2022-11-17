@@ -25,7 +25,7 @@ class PostController extends GetxController {
       TextEditingController().obs;
   final Rx<TextEditingController> searchFlag = TextEditingController().obs;
   late ImagePickerController pickerController;
-
+  final RxString searchFlagText = ''.obs;
   final _lastPage = false.obs;
   int get _limit => paginationFilter.value.limit!;
   int get _page => paginationFilter.value.page!;
@@ -33,6 +33,7 @@ class PostController extends GetxController {
   List get myPosts => _myPosts.toList();
   List get posts => _posts.toList();
   final paginationFilter = LazyLoadingFilter().obs;
+
   // get paginationFilter => paginationFilter.value;
 
   @override
@@ -40,16 +41,22 @@ class PostController extends GetxController {
     Get.lazyPut<PostProvider>(() => PostProvider());
     Get.lazyPut<ImagePickerController>(() => ImagePickerController());
     pickerController = Get.find<ImagePickerController>();
-
     super.onInit();
   }
 
   @override
   void onClose() {}
+  @override
+  void onReady() {
+    super.onReady();
+    debounce(searchFlagText, (_) => fetchFlags(),
+        time: Duration(milliseconds: 500));
+  }
 
-  Future<List> fetchFlags(String search) async {
+  Future<List> fetchFlags() async {
+    print("fetchFlags");
     final response =
-        await Get.find<PostProvider>().getFlags(search: searchFlag.value.text);
+        await Get.find<PostProvider>().getFlags(search: searchFlagText.value);
     if (response.statusCode == 200) {
       flags.assignAll(response.body['data']);
     }
@@ -60,7 +67,6 @@ class PostController extends GetxController {
     final response =
         await Get.find<PostProvider>().getPosts(paginationFilter.value);
     if (response.statusCode == 200) {
-      print(response.body['data'].length);
       isLoading.value = false;
       if (response.body['data'].length == 0) {
         _lastPage.value = true;
@@ -72,7 +78,6 @@ class PostController extends GetxController {
   }
 
   void likePost(id) async {
-    print(id);
     final response = await Get.find<PostProvider>().likePost(id);
     print(response.statusCode);
     if (response.statusCode == 200) {
@@ -83,8 +88,12 @@ class PostController extends GetxController {
   Future<bool> isLiked(id) async {
     bool isLiked = false;
     final response = await Get.find<PostProvider>().getLike(id);
+    print(response.statusCode);
+    print('isLiked' + response.body['data'].toString());
     if (response.statusCode == 200) {
       isLiked = response.body['data'] == 1 ? true : false;
+      update();
+      refresh();
     }
     return isLiked;
   }
@@ -130,7 +139,7 @@ class PostController extends GetxController {
         await Get.find<PostProvider>().storeFlag(searchFlag.value.text);
     print(response.statusCode);
     if (response.statusCode == 200) {
-      fetchFlags(searchFlag.value.text);
+      fetchFlags();
     }
   }
 
@@ -150,6 +159,7 @@ class PostController extends GetxController {
 
   void changeTotalPerPage(int limitVal) {
     _myPosts.clear();
+    _posts.clear();
     _lastPage.value = false;
     changePaginationFilter(1, limitVal);
   }
