@@ -73,7 +73,7 @@ class PostDescription extends StatelessWidget {
           Row(
             children: [
               Text(
-                hastag!,
+                parseToHashTag(hastag!),
                 style: const TextStyle(
                     color: SchemaColor.primary,
                     fontSize: 15,
@@ -81,7 +81,7 @@ class PostDescription extends StatelessWidget {
               ),
               const SizedBox(width: 5),
               Text(
-                time!,
+                dateFromNow(time!),
                 style: const TextStyle(
                     color: Color.fromARGB(255, 86, 86, 86),
                     fontSize: 14,
@@ -92,5 +92,25 @@ class PostDescription extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String parseToHashTag(String text) {
+    return "#" + text.replaceAll(" ", "");
+  }
+
+  String dateFromNow(String date) {
+    final now = DateTime.now();
+    final commentDate = DateTime.parse(date);
+    final difference = now.difference(commentDate);
+
+    if (difference.inDays > 0) {
+      return '${difference.inDays} hari yang lalu';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours} jam yang lalu';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes} menit yang lalu';
+    } else {
+      return 'Baru saja';
+    }
   }
 }
