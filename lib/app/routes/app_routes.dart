@@ -8,10 +8,11 @@ abstract class Routes {
   static const CORE = _Paths.CORE;
   static const PROFILE = _Paths.PROFILE;
   static const POST = _Paths.POST;
-  static const DETAIL_POST = _Paths.DETAIL_POST;
-  static const COMMENT = _Paths.COMMENT;
+
   static const TEST = _Paths.TEST;
   static const SEARCH = _Paths.SEARCH;
+  static const USERS = _Paths.USERS;
+  static const COMMENT = _Paths.COMMENT;
 }
 
 abstract class _Paths {
@@ -21,8 +22,9 @@ abstract class _Paths {
   static const CORE = '/core';
   static const PROFILE = '/profile';
   static const POST = '/post';
-  static const DETAIL_POST = '/detail-post';
+
   static const TEST = '/test';
   static const SEARCH = '/search';
+  static const USERS = '/users';
   static const COMMENT = '/comment';
 }
