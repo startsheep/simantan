@@ -12,6 +12,7 @@ class CommentController extends GetxController {
   final RxList comments = [].obs;
   final RxList _commentsByPost = [].obs;
   final RxBool isLoading = true.obs;
+  final RxBool isSubmit = false.obs;
 
   final _paginationFilter = LazyLoadingFilter().obs;
   final _lastPage = false.obs;
@@ -26,14 +27,12 @@ class CommentController extends GetxController {
     Get.lazyPut<CommentProvider>(() => CommentProvider());
     Get.find<CommentProvider>().onInit();
     print("Comment Controller init");
-    getCommentsByPost();
   }
 
   @override
   void onReady() {
     super.onReady();
-    ever(_paginationFilter, (_) => getCommentsByPost());
-    changePaginationFilter(1, 10);
+    getCommentsByPost();
   }
 
   @override
@@ -51,21 +50,14 @@ class CommentController extends GetxController {
     }
   }
 
-  void getCommentsByPost() async {
+  Future<void> getCommentsByPost() async {
     print("getCommentsByPost");
-    final response = await Get.find<CommentProvider>().getCommentsByPost(
-        Get.parameters['postId'].toString(), _paginationFilter.value);
-
-    print(response.body);
+    isLoading.value = true;
+    final response = await Get.find<CommentProvider>()
+        .getCommentsByPost(Get.parameters['postId'].toString());
     if (response.statusCode == 200) {
-      if (response.body['data'].length == 0) {
-        _lastPage.value = true;
-        print("lastPage");
-      } else {
-        print("not lastPage");
-
-        _commentsByPost.addAll(response.body['data']);
-      }
+      isLoading.value = false;
+      _commentsByPost.assignAll(response.body['data']);
     }
   }
 
@@ -73,16 +65,21 @@ class CommentController extends GetxController {
     String? postId,
   }) async {
     print("storeComment");
+    isSubmit.value = true;
     final response = await Get.find<CommentProvider>().storeComment(
       message: message.value.text,
       postId: postId,
     );
-    print(response.body);
+    print(response.status);
     if (response.status.hasError) {
       Get.snackbar('Error', response.statusText.toString());
+      isSubmit.value = false;
     } else {
       Get.snackbar('Success', response.statusText.toString());
+      isSubmit.value = false;
+      refresh();
       getCommentsByPost();
+      message.value.clear();
     }
   }
 
