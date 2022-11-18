@@ -12,7 +12,7 @@ class ProfileView extends GetView<ProfileController> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
-        title: Text(
+        title: const Text(
           'Profile',
           style: TextStyle(color: Colors.black),
         ),
@@ -40,7 +40,8 @@ class ProfileView extends GetView<ProfileController> {
                             textConfirm: 'Ya',
                             textCancel: 'Tidak',
                             confirmTextColor: Colors.white,
-                            cancelTextColor: Color.fromARGB(255, 23, 22, 22),
+                            cancelTextColor:
+                                const Color.fromARGB(255, 23, 22, 22),
                             buttonColor: SchemaColor.primary,
                             onConfirm: () {
                               Get.back();
@@ -69,12 +70,13 @@ class ProfileView extends GetView<ProfileController> {
                   Container(
                     child: CircleAvatar(
                       radius: 45,
-                      backgroundColor: Color.fromARGB(255, 111, 255, 116),
+                      backgroundColor: const Color.fromARGB(255, 111, 255, 116),
                       child: CircleAvatar(
                         radius: 43,
                         foregroundColor: SchemaColor.primary,
-                        backgroundImage:
-                            NetworkImage('https://placeimg.com/640/480/people'),
+                        backgroundImage: NetworkImage(
+                            AuthServices.getUser['image'] ??
+                                ' https://placeimg.com/640/480/people'),
                       ),
                     ),
                   ),
@@ -84,7 +86,7 @@ class ProfileView extends GetView<ProfileController> {
                     children: [
                       Text(
                         AuthServices.getUser['name'],
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
@@ -92,7 +94,7 @@ class ProfileView extends GetView<ProfileController> {
                       const SizedBox(height: 5),
                       Text(
                         AuthServices.getUser['nip'],
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w300,
                         ),
@@ -113,7 +115,7 @@ class ProfileView extends GetView<ProfileController> {
                 ),
                 onPressed: () {},
                 child: Container(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   width: Get.width,
                   child: const Text(
                     'Edit Profile',
@@ -127,7 +129,23 @@ class ProfileView extends GetView<ProfileController> {
               ),
             ),
             const Divider(),
-            const UserPostsWidget(),
+            Obx(() {
+              if (controller.postController.isLoading.value) {
+                return const Expanded(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              } else if (controller.postController.myPosts.isEmpty) {
+                return const Expanded(
+                  child: Center(
+                    child: Text('Belum ada postingan nih'),
+                  ),
+                );
+              } else {
+                return const UserPostsWidget();
+              }
+            })
           ],
         ),
       ),

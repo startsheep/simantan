@@ -70,7 +70,9 @@ class UserPostsWidget extends GetView<ProfileController> {
                                             Color.fromARGB(255, 23, 22, 22),
                                         buttonColor: SchemaColor.primary,
                                         onConfirm: () {
-                                          Get.back();
+                                          controller.postController.deletePost(
+                                              controller.postController
+                                                  .myPosts[index]['id']);
                                         },
                                       );
                                     },
