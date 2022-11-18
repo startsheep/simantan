@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
@@ -26,6 +25,7 @@ class PostController extends GetxController {
   final Rx<TextEditingController> searchFlag = TextEditingController().obs;
   late ImagePickerController pickerController;
   final RxString searchFlagText = ''.obs;
+  RxString flagName = ''.obs;
   final _lastPage = false.obs;
   int get _limit => paginationFilter.value.limit!;
   int get _page => paginationFilter.value.page!;
@@ -54,16 +54,21 @@ class PostController extends GetxController {
   }
 
   Future<List> fetchFlags() async {
-    print("fetchFlags");
+    isLoading.value = true;
     final response =
         await Get.find<PostProvider>().getFlags(search: searchFlagText.value);
     if (response.statusCode == 200) {
+      isLoading.value = false;
       flags.assignAll(response.body['data']);
+    } else {
+      // flags.assignAll([]);
+      isLoading.value = false;
     }
     return flags;
   }
 
   void fetchPosts() async {
+    // isLoading.value = true;
     final response =
         await Get.find<PostProvider>().getPosts(paginationFilter.value);
     if (response.statusCode == 200) {
@@ -74,6 +79,8 @@ class PostController extends GetxController {
         _lastPage.value = false;
         _posts.addAll(response.body['data']);
       }
+    } else {
+      isLoading.value = false;
     }
   }
 
@@ -88,8 +95,7 @@ class PostController extends GetxController {
   Future<bool> isLiked(id) async {
     bool isLiked = false;
     final response = await Get.find<PostProvider>().getLike(id);
-    print(response.statusCode);
-    print('isLiked' + response.body['data'].toString());
+
     if (response.statusCode == 200) {
       isLiked = response.body['data'] == 1 ? true : false;
       update();
@@ -100,9 +106,11 @@ class PostController extends GetxController {
 
   void getMyPosts() async {
     print('getMyPosts');
+    isLoading.value = true;
     final response =
         await Get.find<PostProvider>().getPostsByUser(paginationFilter.value);
     if (response.statusCode == 200) {
+      isLoading.value = false;
       if (response.body['data'].length == 0) {
         _lastPage.value = true;
       } else {
@@ -140,13 +148,14 @@ class PostController extends GetxController {
     print(response.statusCode);
     if (response.statusCode == 200) {
       fetchFlags();
+      update();
     }
   }
 
   void deletePost(int id) async {
     final response = await Get.find<PostProvider>().deletePost(id);
     if (response.statusCode == 200) {
-      fetchPosts();
+      getMyPosts();
     }
   }
 

@@ -12,6 +12,7 @@ void main() async {
   runApp(
     GetMaterialApp(
       // darkTheme: ThemeData.dark(useMaterial3: true),
+
       debugShowCheckedModeBanner: false,
       title: "SIMANTAN",
       initialRoute: AuthServices.getAuth ? Routes.CORE : Routes.AUTH,
