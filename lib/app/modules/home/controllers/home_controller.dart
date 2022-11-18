@@ -16,7 +16,7 @@ class HomeController extends GetxController {
     postController = Get.find<PostController>();
     postController.onInit();
     ever(postController.paginationFilter, (_) => postController.fetchPosts());
-    postController.changePaginationFilter(1, 3);
+    postController.changePaginationFilter(1, 5);
   }
 
   @override
@@ -40,5 +40,8 @@ class HomeController extends GetxController {
         date.year.toString();
   }
 
+  Future<void> refreshPage() async {
+    postController.fetchPosts();
+  }
   // List<d
 }
