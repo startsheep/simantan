@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class PostContent extends StatelessWidget {
   String? contentUrl;
@@ -24,7 +25,33 @@ class PostContent extends StatelessWidget {
           ),
         ],
       ),
-      child: Image.network(contentUrl!),
+      child: Image.network(
+        contentUrl!,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            // place holder image from assets
+            width: Get.width,
+            height: Get.width,
+            child: Center(
+              child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded /
+                        loadingProgress.expectedTotalBytes!
+                    : null,
+              ),
+            ),
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/placeholder_image.jpg'),
+                fit: BoxFit.cover,
+              ),
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(10),
+            ),
+          );
+        },
+      ),
     );
   }
 }

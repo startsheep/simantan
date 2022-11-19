@@ -28,10 +28,23 @@ class PostDescription extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            username!,
-            style: const TextStyle(
-                color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600),
+          Text.rich(
+            TextSpan(
+              text: username,
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+              children: [
+                TextSpan(
+                  text: ' 1 Suka',
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 143, 143, 143),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 5),
           // ,ake description collapse when many text

@@ -93,7 +93,13 @@ class PostProvider extends GetConnect {
   }
 
   Future<Response> getLike(int id) {
-    return get('post/like/count/$id', headers: {
+    return get('like/status/$id', headers: {
+      'Authorization': 'Bearer ' + AuthServices.getToken,
+    });
+  }
+
+  Future<Response> getCountLike(String idPost) {
+    return get('like/count/$idPost', headers: {
       'Authorization': 'Bearer ' + AuthServices.getToken,
     });
   }
