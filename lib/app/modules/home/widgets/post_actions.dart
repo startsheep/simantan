@@ -18,7 +18,17 @@ class PostActions extends StatelessWidget {
         Row(
           children: [
             IconButton(
-              icon: isLiked(postId),
+              icon: Obx(
+                () => controller.likedPosts.contains(postId)
+                    ? const Icon(
+                        Icons.favorite,
+                        color: Colors.red,
+                      )
+                    : const Icon(
+                        Icons.favorite_border,
+                        color: Colors.black,
+                      ),
+              ),
               onPressed: () {
                 controller.likePost(postId!);
               },
@@ -41,17 +51,17 @@ class PostActions extends StatelessWidget {
     );
   }
 
-  Widget isLiked(id) {
-    return FutureBuilder(
-      future: controller.isLiked(id),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return Icon(snapshot.data! ? Icons.favorite : Icons.favorite_border,
-              color: snapshot.data! ? Colors.red : Colors.black);
-        } else {
-          return const Icon(Icons.favorite_border);
-        }
-      },
-    );
-  }
+  // Widget isLiked(id) {
+  //   return FutureBuilder(
+  //     future: controller.isLikedPost(id),
+  //     builder: (context, snapshot) {
+  //       if (snapshot.hasData) {
+  //         return Icon(snapshot.data! ? Icons.favorite : Icons.favorite_border,
+  //             color: snapshot.data! ? Colors.red : Colors.black);
+  //       } else {
+  //         return const Icon(Icons.favorite_border);
+  //       }
+  //     },
+  //   );
+  // }
 }
