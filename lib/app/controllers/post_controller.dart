@@ -26,6 +26,10 @@ class PostController extends GetxController {
   late ImagePickerController pickerController;
   final RxString searchFlagText = ''.obs;
   RxString flagName = ''.obs;
+  RxList likedPosts = [].obs;
+  RxList dislikedPosts = [].obs;
+  RxBool isLiked = false.obs;
+
   final _lastPage = false.obs;
   int get _limit => paginationFilter.value.limit!;
   int get _page => paginationFilter.value.page!;
@@ -78,30 +82,45 @@ class PostController extends GetxController {
       } else {
         _lastPage.value = false;
         _posts.addAll(response.body['data']);
+        _posts.forEach((element) {
+          likedPosts.add(
+            {
+              'id': element['id'],
+              'liked': isLiked.value,
+            },
+          );
+        });
       }
     } else {
       isLoading.value = false;
     }
   }
 
-  void likePost(id) async {
-    final response = await Get.find<PostProvider>().likePost(id);
-    print(response.statusCode);
+  void refreshPage() async {
+    // ignore: invalid_use_of_protected_member
+    _posts.value = _posts.value;
+  }
+
+  void likePost(int idPost) async {
+    final response = await Get.find<PostProvider>().likePost(idPost);
     if (response.statusCode == 200) {
-      fetchPosts();
+      likedPosts.forEach((element) {
+        if (element['id'] == idPost) {
+          element['liked'] = !element['liked'];
+        }
+      });
     }
   }
 
-  Future<bool> isLiked(id) async {
-    bool isLiked = false;
-    final response = await Get.find<PostProvider>().getLike(id);
-
+  void isLikedPost(
+    int postId,
+  ) async {
+    bool liked = false;
+    final response = await Get.find<PostProvider>().getLike(postId);
     if (response.statusCode == 200) {
-      isLiked = response.body['data'] == 1 ? true : false;
-      update();
-      refresh();
+      liked = response.body['data'];
+      isLiked.value = liked;
     }
-    return isLiked;
   }
 
   void getMyPosts() async {
@@ -186,5 +205,12 @@ class PostController extends GetxController {
 
   void onSuccessPost() {
     // show
+  }
+  void countLikePost(String idPost) async {
+    final response = await Get.find<PostProvider>().getCountLike(idPost);
+    if (response.statusCode == 200) {
+      print(response.body['data']);
+      // return response.body['data'];
+    }
   }
 }

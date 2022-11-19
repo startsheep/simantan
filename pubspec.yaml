@@ -25,5 +25,6 @@ flutter:
   assets: 
     - assets/
     - assets/logo-brand.png
+    - assets/placeholder_image.jpg
   uses-material-design: true
 
