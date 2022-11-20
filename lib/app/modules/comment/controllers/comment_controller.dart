@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:simantan/app/models/lazy_loading_filter.dart';
 import 'package:simantan/app/providers/comment_provider.dart';
+import 'package:simantan/app/theme/colors.dart';
 
 class CommentController extends GetxController {
   final Rx<TextEditingController> message = TextEditingController().obs;
@@ -13,6 +14,8 @@ class CommentController extends GetxController {
   final RxList _commentsByPost = [].obs;
   final RxBool isLoading = true.obs;
   final RxBool isSubmit = false.obs;
+  String selectedCommentId = '';
+  final showToolbar = false.obs;
 
   final _paginationFilter = LazyLoadingFilter().obs;
   final _lastPage = false.obs;
@@ -52,7 +55,7 @@ class CommentController extends GetxController {
 
   Future<void> getCommentsByPost() async {
     print("getCommentsByPost");
-    isLoading.value = true;
+    // isLoading.value = true;
     final response = await Get.find<CommentProvider>()
         .getCommentsByPost(Get.parameters['postId'].toString());
     if (response.statusCode == 200) {
@@ -81,6 +84,29 @@ class CommentController extends GetxController {
       getCommentsByPost();
       message.value.clear();
     }
+  }
+
+  void deleteComment(String id) async {
+    print("deleteComment");
+    final response = await Get.find<CommentProvider>().deleteComment(id);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      // show snackgr
+      Get.snackbar(
+        'Success',
+        'Comment deleted successfully',
+        // snackStyle: SnackStyle.GROUNDED,
+        backgroundColor: SchemaColor.success,
+        shouldIconPulse: true,
+        icon: Icon(
+          Icons.check_circle,
+          color: Colors.white,
+          size: 50,
+        ),
+      );
+      getCommentsByPost();
+    }
+    ;
   }
 
   void changePaginationFilter(int page, int limit) {

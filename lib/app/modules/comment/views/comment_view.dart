@@ -1,7 +1,10 @@
 import 'package:expandable_text/expandable_text.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:simantan/app/modules/comment/widgets/comment_actions.dart';
+import 'package:simantan/app/modules/comment/widgets/comment_field.dart';
 import 'package:simantan/app/modules/comment/widgets/comment_widget.dart';
 import 'package:simantan/app/services/auth_services.dart';
 import 'package:simantan/app/theme/colors.dart';
@@ -28,117 +31,115 @@ class CommentView extends GetView<CommentController> {
         ),
       ),
       body: SafeArea(
-        child: Column(
-          // make comment like instagram
-          children: [
-            // list comments
-            Expanded(
-              child: Obx(() {
-                // return make condition like instagram
-                if (controller.isLoading.value) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (controller.commentsByPost.isEmpty) {
-                  return const Center(
-                    child: Text("Belum ada komentar"),
-                  );
-                } else {
-                  return RefreshIndicator(
-                    onRefresh: () => controller.getCommentsByPost(),
-                    semanticsLabel: controller.commentsByPost.length.toString(),
-                    semanticsValue: controller.commentsByPost.length.toString(),
-                    child: ListView.builder(
-                      reverse: false,
-                      itemCount: controller.commentsByPost.length,
-                      itemBuilder: (context, index) {
-                        final comment = controller.commentsByPost[index];
-                        return CommentWidget(
-                          comment: comment,
-                        );
-                      },
-                    ),
-                  );
-                }
-              }),
-            ),
+        child: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          // hide toolbar when slide left is
+          onHorizontalDragStart: (details) {
+            print(details.globalPosition);
+            if (details.globalPosition.dx < 50) {
+              // FocusScope.of(context).unfocus();
+              if (controller.showToolbar.value == true) {
+                controller.showToolbar.value = !controller.showToolbar.value;
+              } else {
+                Get.back();
+              }
+            }
+          },
+//
+          child: Column(
+            // make comment like instagram
+            children: [
+              Expanded(
+                child: Obx(() {
+                  if (controller.isLoading.value) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (controller.commentsByPost.isEmpty) {
+                    return const Center(
+                      child: Text("Belum ada komentar"),
+                    );
+                  } else {
+                    return RefreshIndicator(
+                      onRefresh: () => controller.getCommentsByPost(),
+                      semanticsLabel:
+                          controller.commentsByPost.length.toString(),
+                      semanticsValue:
+                          controller.commentsByPost.length.toString(),
+                      child: ListView.builder(
+                        itemCount: controller.commentsByPost.length,
+                        itemBuilder: (context, index) {
+                          final comment = controller.commentsByPost[index];
 
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // user image
-                  Container(
-                    margin: const EdgeInsets.only(right: 10),
-                    child: CircleAvatar(
-                      radius: 20,
-                      backgroundImage:
-                          NetworkImage(AuthServices.getUser['image']),
-                    ),
-                  ),
-                  // comment
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: TextField(
-                        minLines: 1,
-                        maxLines: 10,
-                        controller: controller.message.value,
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          hintText: "Tambahkan Komentar",
-                        ),
-                      ),
-                    ),
-                  ),
-                  Obx(
-                    () => controller.isSubmit.value
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              // animation with primary
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                  SchemaColor.primary),
-                            ),
-                          )
-                        : IconButton(
-                            onPressed: () {
-                              controller.storeComment(
-                                postId: Get.parameters['postId'],
-                              );
+                          return InkWell(
+                            onLongPress: () {
+                              final _isMyComment = comment['user']['id'];
+                              final _isMyPost =
+                                  int.parse(comment['post']['user_id']);
+                              if (canDeletePost(_isMyComment, _isMyPost)) {
+                                controller.showToolbar.value =
+                                    !controller.showToolbar.value;
+                                controller.selectedCommentId =
+                                    comment['id'].toString();
+                              }
                             },
-                            icon: const Icon(
-                              Icons.send,
-                              color: SchemaColor.primary,
-                            )),
-                  )
-                ],
+                            child: Column(
+                              children: [
+                                //bmake background when selected
+                                Obx(() {
+                                  if (controller.showToolbar.value == true &&
+                                      controller.selectedCommentId ==
+                                          comment['id'].toString()) {
+                                    return Container(
+                                      color: Colors.grey.shade200,
+                                      child: CommentWidget(
+                                        comment: comment,
+                                      ),
+                                    );
+                                  } else {
+                                    return CommentWidget(
+                                      comment: comment,
+                                    );
+                                  }
+                                }),
+                                // make comment action show by per comment id
+                                Obx(() {
+                                  if (controller.showToolbar.value &&
+                                      controller.selectedCommentId ==
+                                          comment['id'].toString()) {
+                                    return CommentActions();
+                                  } else {
+                                    return const SizedBox();
+                                  }
+                                }),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  }
+                }),
               ),
-            ),
-          ],
+              const CommentField(),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  bool canDeletePost(String userId) {
+  bool canDeletePost(int userId, userPost) {
+    return isMyComment(userId) || isMyPost(userPost);
+  }
+
+  bool isMyComment(int userId) {
     return AuthServices.getUser['id'] == userId;
   }
 
-  bool isMyComment(String userId) {
-    return AuthServices.getUser['id'] == userId;
-  }
-
-  bool isMyPost(String userId) {
+  bool isMyPost(int userId) {
     return AuthServices.getUser['id'] == userId;
   }
 }

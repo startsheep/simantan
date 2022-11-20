@@ -107,7 +107,19 @@ class SearchView extends GetView<SearchController> {
   }
 
   Widget _buildUsers() {
-    return Expanded(child: ListView());
+    return Expanded(
+        child: ListView.builder(
+      itemCount: controller.users.length,
+      itemBuilder: (context, index) {
+        return ListTile(
+          leading: CircleAvatar(
+            backgroundImage: NetworkImage(controller.users[index]['image']),
+          ),
+          title: Text(controller.users[index]['name']),
+          subtitle: Text(controller.users[index]['nip']),
+        );
+      },
+    ));
   }
 
   Widget _buildPosts() {
