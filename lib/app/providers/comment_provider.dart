@@ -55,4 +55,10 @@ class CommentProvider extends GetConnect {
     );
     return response;
   }
+
+  Future<Response> deleteComment(String id) async {
+    return await delete('comment/$id', headers: {
+      'Authorization': 'Bearer ' + AuthServices.getToken,
+    });
+  }
 }
