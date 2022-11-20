@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:simantan/app/modules/home/providers/post_provider.dart';
+import 'package:simantan/app/providers/user_provider.dart';
 
 import '../../../models/lazy_loading_filter.dart';
 
@@ -13,7 +14,7 @@ class SearchController extends GetxController {
   final RxInt selectedChipCategory = 0.obs;
   final RxList flags = [].obs;
   final RxList _posts = [].obs;
-  final RxList users = [].obs;
+  final RxList _users = [].obs;
   final RxList tabs = [
     {'name': 'Tagar', 'value': 0},
     {'name': 'Postingan', 'value': 1},
@@ -28,6 +29,7 @@ class SearchController extends GetxController {
   int get _page => paginationFilter.value.page!;
   bool get lastPage => _lastPage.value;
   List get posts => _posts.toList();
+  List get users => _users.toList();
   final paginationFilter = LazyLoadingFilter().obs;
 
   @override
@@ -35,6 +37,8 @@ class SearchController extends GetxController {
     super.onInit();
     Get.lazyPut<PostProvider>(() => PostProvider());
     Get.find<PostProvider>().onInit();
+    Get.lazyPut<UserProvider>(() => UserProvider());
+    Get.find<UserProvider>().onInit();
     fetchFlags();
   }
 
@@ -71,16 +75,40 @@ class SearchController extends GetxController {
     }
   }
 
+  void fetchUsers() async {
+    isLoading.value = true;
+    print("fetchUsers");
+    // refresh();
+    update();
+    final response = await Get.find<UserProvider>().getUsers(
+      paginationFilter.value,
+    );
+    print(response.statusCode);
+    print(response.body);
+    if (response.statusCode == 200) {
+      isLoading.value = false;
+      if (response.body['data'].length == 0) {
+        _lastPage.value = true;
+      } else {
+        _lastPage.value = false;
+        _users.addAll(response.body['data']);
+      }
+    }
+  }
+
   @override
   void onReady() {
     super.onReady();
-
+    fetchUsers();
     debounce(searchText, (_) => fetchFlags(),
         time: Duration(milliseconds: 500));
     debounce(searchText, (_) => fetchPosts(),
         time: Duration(milliseconds: 500));
     if (_posts.length > 0) {
       ever(paginationFilter, (_) => fetchPosts());
+    }
+    if (_users.length > 0) {
+      ever(paginationFilter, (_) => fetchUsers());
     }
     changePaginationFilter(1, 10);
   }
