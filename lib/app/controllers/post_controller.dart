@@ -13,8 +13,8 @@ import 'package:simantan/app/theme/colors.dart';
 
 class PostController extends GetxController {
   //TODO: Implement PostControllerController
-  RxList _posts = [].obs;
-  RxList _myPosts = [].obs;
+  final RxList _posts = [].obs;
+  final RxList _myPosts = [].obs;
   RxList flags = [].obs;
   RxBool isLoading = true.obs;
   RxBool isUploading = false.obs;
@@ -93,42 +93,6 @@ class PostController extends GetxController {
     _posts.value = _posts.value;
   }
 
-  Future<bool?> likePost(int idPost) async {
-    final response = await Get.find<PostProvider>().likePost(idPost);
-
-    if (response.statusCode == 200) {
-      countLike(idPost);
-      refresh();
-      update();
-      return isLikedPost(idPost);
-    } else {
-      return isLikedPost(idPost);
-    }
-  }
-
-  Future<bool?> isLikedPost(
-    int postId,
-  ) async {
-    bool? liked;
-    // print('likedPosts: ');
-    final response = await Get.find<PostProvider>().getLike(postId);
-
-    if (response.statusCode == 200) {
-      print('response isLikedPost' + response.body.toString());
-      return response.body['data'];
-    }
-  }
-
-  Future<String?> countLike(int idPost) async {
-    print("countLike");
-    final response = await Get.find<PostProvider>().getCountLike(idPost);
-    print(response.body);
-    if (response.statusCode == 200) {
-      print('response countLike' + response.body.toString());
-      return response.body['data'].toString();
-    }
-  }
-
   void getMyPosts() async {
     print('getMyPosts');
     isLoading.value = true;
@@ -170,7 +134,6 @@ class PostController extends GetxController {
     print('storeFlag');
     final response =
         await Get.find<PostProvider>().storeFlag(searchFlag.value.text);
-    print(response.statusCode);
     if (response.statusCode == 200) {
       fetchFlags();
       update();
@@ -180,7 +143,10 @@ class PostController extends GetxController {
   void deletePost(int id) async {
     final response = await Get.find<PostProvider>().deletePost(id);
     if (response.statusCode == 200) {
+      Get.back();
+      Get.back();
       getMyPosts();
+      refresh();
     }
   }
 
