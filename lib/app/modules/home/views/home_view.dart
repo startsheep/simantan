@@ -114,6 +114,7 @@ class HomeView extends GetView<HomeController> {
                                 ),
                                 PostActions(
                                   postId: post['id'],
+                                  likeCount: post['countLike'],
                                 ),
                                 PostDescription(
                                   username: post['user']['name'],
@@ -121,6 +122,8 @@ class HomeView extends GetView<HomeController> {
                                   hastag: post['flag']['name'],
                                   time: post['created_at'],
                                   postId: post['id'].toString(),
+                                  countComment: post['countComment'].toString(),
+                                  countLike: post['countLike'].toString(),
                                 ),
 
                                 // PostComment(),

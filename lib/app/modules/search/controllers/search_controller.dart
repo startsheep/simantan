@@ -11,6 +11,7 @@ class SearchController extends GetxController {
   final selectedFlag = null.obs;
   final selectedCategory = null.obs;
   final RxInt selectedChip = 0.obs;
+  final RxString selectedFlagId = ''.obs;
   final RxInt selectedChipCategory = 0.obs;
   final RxList flags = [].obs;
   final RxList _posts = [].obs;
@@ -60,7 +61,7 @@ class SearchController extends GetxController {
     final response = await Get.find<PostProvider>().getPosts(
       paginationFilter.value,
       search: searchText.value,
-      flagId: selectedFlag.value,
+      flagId: selectedFlagId.value,
     );
     print(response.statusCode);
     print(response.body);
@@ -100,6 +101,7 @@ class SearchController extends GetxController {
   void onReady() {
     super.onReady();
     fetchUsers();
+    ever(selectedFlagId, ((callback) => fetchPosts()));
     debounce(searchText, (_) => fetchFlags(),
         time: Duration(milliseconds: 500));
     debounce(searchText, (_) => fetchPosts(),

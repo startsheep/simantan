@@ -163,38 +163,62 @@ class SearchView extends GetView<SearchController> {
   }
 
   Widget _buildHashtag() {
+    // make grid view box show label and count post
     return controller.flags.length > 0
-        ? ChipsChoice<int>.single(
-            // spinnerColor: SchemaColor.primary,
-
-            leading: Text("Tagar",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            value: controller.selectedChip.value,
-            onChanged: (val) => {
-              controller.selectedChip.value = val,
-            },
-            choiceItems: C2Choice.listFrom<int, dynamic>(
-              source: controller.flags,
-              value: (i, v) => i,
-              label: (i, v) => parseToHashTag(v['name']),
-            ),
-            choiceBuilder: (item, i) {
-              return Container(
-                margin: EdgeInsets.only(right: 5, left: 2),
-                child: ChoiceChip(
-                  label:
-                      Text(item.label, style: TextStyle(color: Colors.white)),
-                  selected: item.selected,
-                  onSelected: (selected) {
-                    controller.selectedChip.value = item.value;
+        ? Expanded(
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              itemCount: controller.flags.length,
+              itemBuilder: (context, index) {
+                return InkWell(
+                  onTap: () {
+                    controller.searchController.value.text =
+                        controller.flags[index]['name'];
+                    controller.searchText.value =
+                        controller.flags[index]['name'];
+                    controller.selectedTab.value = 1;
                   },
-                  backgroundColor: Colors.black38,
-                  selectedColor: SchemaColor.primary,
-                ),
-              );
-            },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.grey),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          parseToHashTag(controller.flags[index]['name']),
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          controller.flags[index]['total'].toString() +
+                              ' Postingan',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
           )
-        : Container();
+        : Center(
+            child: Text('Tidak ada data'),
+          );
   }
 
   String parseToHashTag(String text) {

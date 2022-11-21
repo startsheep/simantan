@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:simantan/app/modules/profile/widgets/user_posts.dart';
+import 'package:simantan/app/routes/app_pages.dart';
 import 'package:simantan/app/services/auth_services.dart';
 import 'package:simantan/app/theme/colors.dart';
+import 'package:simantan/app/widgets/button_primary.dart';
 import '../controllers/profile_controller.dart';
 
 class ProfileView extends GetView<ProfileController> {
@@ -73,10 +75,10 @@ class ProfileView extends GetView<ProfileController> {
                       backgroundColor: const Color.fromARGB(255, 111, 255, 116),
                       child: CircleAvatar(
                         radius: 43,
-                        foregroundColor: SchemaColor.primary,
-                        backgroundImage: NetworkImage(
-                            AuthServices.getUser['image'] ??
-                                ' https://placeimg.com/640/480/people'),
+                        // foregroundColor: SchemaColor.primary,
+                        backgroundImage: AssetImage('assets/avatar_l.jpg'),
+                        foregroundImage: NetworkImage(
+                            AuthServices.getUser['image'].toString()),
                       ),
                     ),
                   ),
@@ -104,30 +106,14 @@ class ProfileView extends GetView<ProfileController> {
                 ],
               ),
             ),
-            // const Divider(),
-
-            // const Divider(),
             Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: SchemaColor.primary,
-                ),
-                onPressed: () {},
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  width: Get.width,
-                  child: const Text(
-                    'Edit Profile',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+                padding: const EdgeInsets.all(10.0),
+                child: ButtonPrimary(
+                  label: "Edit Profil",
+                  onPressed: () {
+                    Get.toNamed(Routes.PROFILE_UPDATE);
+                  },
+                )),
             const Divider(),
             Obx(() {
               if (controller.postController.isLoading.value) {

@@ -11,12 +11,16 @@ class PostDescription extends StatelessWidget {
   String? hastag;
   String? time;
   String? postId;
+  String? countComment;
+  String? countLike;
   PostDescription({
     Key? key,
     this.username,
     this.description,
     this.hastag,
     this.postId,
+    this.countComment,
+    this.countLike,
     this.time,
   }) : super(key: key);
 
@@ -35,15 +39,7 @@ class PostDescription extends StatelessWidget {
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
               ),
-              children: [
-                TextSpan(
-                  text: ' 1 Suka',
-                  style: TextStyle(
-                    color: Color.fromARGB(255, 143, 143, 143),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
+              children: [],
             ),
           ),
           const SizedBox(height: 5),
@@ -73,7 +69,7 @@ class PostDescription extends StatelessWidget {
               Get.toNamed(Routes.COMMENT, parameters: {'postId': postId!});
             },
             child: Text(
-              "Lihat komentar",
+              "Lihat $countComment komentar",
               style: const TextStyle(
                 color: Color.fromARGB(255, 102, 102, 102),
                 fontSize: 14,
