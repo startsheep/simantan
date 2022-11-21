@@ -7,6 +7,7 @@ abstract class Routes {
   static const AUTH = _Paths.AUTH;
   static const CORE = _Paths.CORE;
   static const PROFILE = _Paths.PROFILE;
+  static const PROFILE_UPDATE = _Paths.PROFILE_UPDATE;
   static const POST = _Paths.POST;
 
   static const TEST = _Paths.TEST;
@@ -21,6 +22,8 @@ abstract class _Paths {
   static const AUTH = '/auth';
   static const CORE = '/core';
   static const PROFILE = '/profile';
+  static const PROFILE_UPDATE = '/profile/edit';
+
   static const POST = '/post';
 
   static const TEST = '/test';

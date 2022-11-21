@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:simantan/app/modules/profile/views/update_profile_view.dart';
 
 import '../modules/auth/bindings/auth_binding.dart';
 import '../modules/auth/views/auth_view.dart';
@@ -49,6 +50,12 @@ class AppPages {
       transition: Transition.downToUp,
       name: _Paths.PROFILE,
       page: () => ProfileView(),
+      binding: ProfileBinding(),
+    ),
+    GetPage(
+      transition: Transition.downToUp,
+      name: _Paths.PROFILE_UPDATE,
+      page: () => UpdateProfileView(),
       binding: ProfileBinding(),
     ),
     GetPage(
