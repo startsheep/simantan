@@ -40,15 +40,8 @@ class PostView extends GetView<PostController> {
                       minLines: 1,
                       maxLines: 10,
                     ),
-                    // Drop
-
-                    // Button Unggah
                     const Divider(),
-
-                    // create dropdown manualy with search
-                    // DROPDOWN
                     ReuseDropdown(),
-
                     const Divider(),
                     controller.isUploading.value
                         ? const Center(

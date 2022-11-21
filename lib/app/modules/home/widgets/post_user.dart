@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class PostUser extends StatelessWidget {
   String? username;
@@ -39,10 +40,13 @@ class PostUser extends StatelessWidget {
           ),
         ),
       ),
-      title: Text(
-        username!,
-        style: const TextStyle(
-            color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
+      title: InkWell(
+        onTap: () {},
+        child: Text(
+          username!,
+          style: const TextStyle(
+              color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
+        ),
       ),
       // subtitle: Text(
       //   '#' +

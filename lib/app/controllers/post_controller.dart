@@ -18,6 +18,7 @@ class PostController extends GetxController {
   RxList flags = [].obs;
   RxBool isLoading = true.obs;
   RxBool isUploading = false.obs;
+  bool isLiked = false;
   RxInt flagId = 0.obs;
   Rx<XFile> image = XFile('').obs;
   final Rx<TextEditingController> descriptionController =
@@ -28,7 +29,6 @@ class PostController extends GetxController {
   RxString flagName = ''.obs;
   RxList likedPosts = [].obs;
   RxList dislikedPosts = [].obs;
-  RxBool isLiked = false.obs;
 
   final _lastPage = false.obs;
   int get _limit => paginationFilter.value.limit!;
@@ -82,14 +82,6 @@ class PostController extends GetxController {
       } else {
         _lastPage.value = false;
         _posts.addAll(response.body['data']);
-        _posts.forEach((element) {
-          likedPosts.add(
-            {
-              'id': element['id'],
-              'liked': isLiked.value,
-            },
-          );
-        });
       }
     } else {
       isLoading.value = false;
@@ -101,25 +93,39 @@ class PostController extends GetxController {
     _posts.value = _posts.value;
   }
 
-  void likePost(int idPost) async {
+  Future<bool?> likePost(int idPost) async {
     final response = await Get.find<PostProvider>().likePost(idPost);
+
     if (response.statusCode == 200) {
-      likedPosts.forEach((element) {
-        if (element['id'] == idPost) {
-          element['liked'] = !element['liked'];
-        }
-      });
+      countLike(idPost);
+      refresh();
+      update();
+      return isLikedPost(idPost);
+    } else {
+      return isLikedPost(idPost);
     }
   }
 
-  void isLikedPost(
+  Future<bool?> isLikedPost(
     int postId,
   ) async {
-    bool liked = false;
+    bool? liked;
+    // print('likedPosts: ');
     final response = await Get.find<PostProvider>().getLike(postId);
+
     if (response.statusCode == 200) {
-      liked = response.body['data'];
-      isLiked.value = liked;
+      print('response isLikedPost' + response.body.toString());
+      return response.body['data'];
+    }
+  }
+
+  Future<String?> countLike(int idPost) async {
+    print("countLike");
+    final response = await Get.find<PostProvider>().getCountLike(idPost);
+    print(response.body);
+    if (response.statusCode == 200) {
+      print('response countLike' + response.body.toString());
+      return response.body['data'].toString();
     }
   }
 
@@ -205,12 +211,5 @@ class PostController extends GetxController {
 
   void onSuccessPost() {
     // show
-  }
-  void countLikePost(String idPost) async {
-    final response = await Get.find<PostProvider>().getCountLike(idPost);
-    if (response.statusCode == 200) {
-      print(response.body['data']);
-      // return response.body['data'];
-    }
   }
 }
