@@ -37,10 +37,12 @@ class UserProvider extends GetConnect {
     FormData _formData = FormData({
       'name': name,
       'nip': nip,
-      'image': MultipartFile(
-        image!,
-        filename: image.path.split('/').last,
-      ),
+      'image': image != null
+          ? MultipartFile(
+              image!,
+              filename: image.path.split('/').last,
+            )
+          : null,
       '_method': 'PUT',
     });
     return post(
