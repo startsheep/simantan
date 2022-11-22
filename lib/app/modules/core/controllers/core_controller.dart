@@ -7,6 +7,7 @@ import 'package:simantan/app/controllers/post_controller.dart';
 import 'package:simantan/app/modules/home/views/home_view.dart';
 import 'package:simantan/app/modules/post/views/post_view.dart';
 import 'package:simantan/app/modules/profile/controllers/profile_controller.dart';
+import 'package:simantan/app/modules/profile/controllers/user_post_controller.dart';
 import 'package:simantan/app/modules/profile/views/profile_view.dart';
 import 'package:simantan/app/modules/search/controllers/search_controller.dart';
 import 'package:simantan/app/modules/search/views/search_view.dart';
@@ -38,6 +39,7 @@ class CoreController extends GetxController {
     }
     if (currentPage.value != 3) {
       Get.delete<ProfileController>();
+      Get.delete<UserPostController>();
     }
   }
 
