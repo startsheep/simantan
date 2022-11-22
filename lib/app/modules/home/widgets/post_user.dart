@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:simantan/app/modules/core/controllers/core_controller.dart';
+import 'package:simantan/app/routes/app_pages.dart';
+import 'package:simantan/app/services/auth_services.dart';
 
 class PostUser extends StatelessWidget {
   String? username;
   String? avatarUrl;
+  String? userId;
   bool? isActive;
   PostUser({
     Key? key,
     this.username,
     this.avatarUrl,
+    this.userId,
     this.isActive,
   }) : super(key: key);
 
@@ -41,7 +46,20 @@ class PostUser extends StatelessWidget {
         ),
       ),
       title: InkWell(
-        onTap: () {},
+        onTap: () {
+          if (userId == AuthServices.getUserId.toString()) {
+            Get.find<CoreController>().currentPage.value = 3;
+          } else {
+            Get.toNamed(
+              Routes.USER,
+              parameters: {
+                'username': username!,
+                'userId': userId!,
+                'avatarUrl': avatarUrl!
+              },
+            );
+          }
+        },
         child: Text(
           username!,
           style: const TextStyle(
