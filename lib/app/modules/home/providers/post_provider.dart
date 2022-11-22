@@ -33,6 +33,14 @@ class PostProvider extends GetConnect {
     });
   }
 
+  Future<Response> updatePost(String postId, {String? description}) async {
+    return await put('post/$postId', {
+      'description': description!,
+    }, headers: {
+      'Authorization': 'Bearer ' + AuthServices.getToken,
+    });
+  }
+
   Future<Response> getPosts(
     LazyLoadingFilter filter, {
     String? flagId,
@@ -46,11 +54,11 @@ class PostProvider extends GetConnect {
         'page': filter.page.toString(),
         'per_page': filter.limit.toString(),
       });
-  Future<Response> getPostsByUser(LazyLoadingFilter filter) =>
+  Future<Response> getPostsByUser(LazyLoadingFilter filter, String userID) =>
       get('post', headers: {
         'Authorization': 'Bearer ' + AuthServices.getToken,
       }, query: {
-        'user': AuthServices.getUserId.toString(),
+        'user': userID,
         // 'flag_id': fla,
         'per_page': filter.limit.toString(),
         'page': filter.page.toString()

@@ -14,7 +14,6 @@ import 'package:simantan/app/theme/colors.dart';
 class PostController extends GetxController {
   //TODO: Implement PostControllerController
   final RxList _posts = [].obs;
-  final RxList _myPosts = [].obs;
   RxList flags = [].obs;
   RxBool isLoading = true.obs;
   RxBool isUploading = false.obs;
@@ -34,7 +33,6 @@ class PostController extends GetxController {
   int get _limit => paginationFilter.value.limit!;
   int get _page => paginationFilter.value.page!;
   bool get lastPage => _lastPage.value;
-  List get myPosts => _myPosts.toList();
   List get posts => _posts.toList();
   final paginationFilter = LazyLoadingFilter().obs;
 
@@ -93,22 +91,6 @@ class PostController extends GetxController {
     _posts.value = _posts.value;
   }
 
-  void getMyPosts() async {
-    print('getMyPosts');
-    isLoading.value = true;
-    final response =
-        await Get.find<PostProvider>().getPostsByUser(paginationFilter.value);
-    if (response.statusCode == 200) {
-      isLoading.value = false;
-      if (response.body['data'].length == 0) {
-        _lastPage.value = true;
-      } else {
-        _lastPage.value = false;
-        _myPosts.addAll(response.body['data']);
-      }
-    }
-  }
-
   void storePost() async {
     isUploading.value = true;
     final response = await Get.find<PostProvider>().storePost(
@@ -140,16 +122,6 @@ class PostController extends GetxController {
     }
   }
 
-  void deletePost(int id) async {
-    final response = await Get.find<PostProvider>().deletePost(id);
-    if (response.statusCode == 200) {
-      Get.back();
-      Get.back();
-      getMyPosts();
-      refresh();
-    }
-  }
-
   void changePaginationFilter(int page, int limit) {
     paginationFilter.update((val) {
       val!.page = page;
@@ -158,7 +130,6 @@ class PostController extends GetxController {
   }
 
   void changeTotalPerPage(int limitVal) {
-    _myPosts.clear();
     _posts.clear();
     _lastPage.value = false;
     changePaginationFilter(1, limitVal);
