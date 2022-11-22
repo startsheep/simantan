@@ -51,10 +51,11 @@ class UpdateProfileView extends GetView<ProfileController> {
                       child: CircleAvatar(
                         radius: 50,
                         // foregroundImage: AssetImage('assets/avatar_l.jpg'),
-                        foregroundImage: controller.image.value == null
-                            ? Image.network(controller.avatarUrl.value).image
-                            : Image.file(File(controller.image.value.path))
-                                .image,
+                        foregroundImage: controller.image.value.path.isNotEmpty
+                            ? Image.file(
+                                File(controller.image.value.path),
+                              ).image
+                            : Image.network(controller.avatarUrl.value).image,
                         backgroundImage: AssetImage('assets/avatar_l.jpg'),
                       ),
                     ),

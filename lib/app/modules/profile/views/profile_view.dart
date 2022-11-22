@@ -115,23 +115,7 @@ class ProfileView extends GetView<ProfileController> {
                   },
                 )),
             const Divider(),
-            Obx(() {
-              if (controller.postController.isLoading.value) {
-                return const Expanded(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              } else if (controller.postController.myPosts.isEmpty) {
-                return const Expanded(
-                  child: Center(
-                    child: Text('Belum ada postingan nih'),
-                  ),
-                );
-              } else {
-                return const UserPostsWidget();
-              }
-            })
+            Expanded(child: const UserPostsWidget())
           ],
         ),
       ),
