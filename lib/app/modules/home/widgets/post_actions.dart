@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
 import 'package:simantan/app/controllers/post_controller.dart';
+import 'package:simantan/app/modules/post/controllers/downloader_controller.dart';
 import 'package:simantan/app/modules/post/controllers/like_controller.dart';
 import 'package:simantan/app/theme/colors.dart';
 
 class PostActions extends GetView<LikeController> {
   int? postId;
   int? likeCount;
+  String? pathImage;
   PostActions({
     this.postId,
     this.likeCount,
+    this.pathImage,
     Key? key,
   }) : super(key: key);
   // final controller = Get.find<PostController>();
@@ -81,8 +84,14 @@ class PostActions extends GetView<LikeController> {
             ),
             IconButton(
               icon: const Icon(Icons.download_outlined),
-              onPressed: () {},
+              onPressed: () async {
+                Get.lazyPut<DownloaderController>(() => DownloaderController());
+                await Get.find<DownloaderController>()
+                    .downloadImage(pathImage.toString()!, whenError: true);
+                Get.find<DownloaderController>().onInit();
+              },
             ),
+            // Text(controller..value),
           ],
         ),
         IconButton(
