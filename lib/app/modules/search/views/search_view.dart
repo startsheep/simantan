@@ -166,9 +166,11 @@ class SearchView extends GetView<SearchController> {
     // make grid view box show label and count post
     return controller.flags.length > 0
         ? Expanded(
+            // make grid view box show label and count post with animation
+
             child: GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
+                crossAxisCount: 2,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
               ),
@@ -176,17 +178,24 @@ class SearchView extends GetView<SearchController> {
               itemBuilder: (context, index) {
                 return InkWell(
                   onTap: () {
-                    controller.searchController.value.text =
-                        controller.flags[index]['name'];
                     controller.searchText.value =
                         controller.flags[index]['name'];
+                    controller.selectedFlagId.value =
+                        controller.flags[index]['id'].toString();
                     controller.selectedTab.value = 1;
                   },
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.grey),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 1,
+                          blurRadius: 2,
+                          offset: Offset(0, 2), // changes position of shadow
+                        ),
+                      ],
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -194,20 +203,15 @@ class SearchView extends GetView<SearchController> {
                         Text(
                           parseToHashTag(controller.flags[index]['name']),
                           style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 5,
+                              fontSize: 16, fontWeight: FontWeight.w600),
                         ),
                         Text(
-                          controller.flags[index]['total'].toString() +
-                              ' Postingan',
+                          controller.flags[index]['total'] == '0'
+                              ? 'Belum ada Postingan'
+                              : controller.flags[index]['total'].toString() +
+                                  ' Postingan',
                           style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
+                              fontSize: 16, fontWeight: FontWeight.w600),
                         ),
                       ],
                     ),

@@ -2,17 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
 import 'package:simantan/app/controllers/post_controller.dart';
+import 'package:simantan/app/modules/post/controllers/downloader_controller.dart';
+import 'package:simantan/app/modules/post/controllers/like_controller.dart';
 import 'package:simantan/app/theme/colors.dart';
 
-class PostActions extends StatelessWidget {
+class PostActions extends GetView<LikeController> {
   int? postId;
   int? likeCount;
+  String? pathImage;
   PostActions({
     this.postId,
     this.likeCount,
+    this.pathImage,
     Key? key,
   }) : super(key: key);
-  final controller = Get.find<PostController>();
+  // final controller = Get.find<PostController>();
 
   @override
   Widget build(BuildContext context) {
@@ -22,65 +26,55 @@ class PostActions extends StatelessWidget {
       children: [
         Row(
           children: [
-            LikeButton(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                onTap: (bool isLiked) async {
-                  if (isLiked) {
-                    controller.likePost(postId!);
-                    // controller.unlikePost(postId!);
-                  } else {
-                    controller.likePost(postId!);
-                  }
-                  return !isLiked;
+            GetBuilder(
+                init: LikeController(),
+                initState: (state) {
+                  controller.getCountLike(postId!);
+                  controller.checkLike(postId!);
                 },
-                // size: 25,
-                circleColor: CircleColor(
-                    start: SchemaColor.primary.withOpacity(0.5),
-                    end: SchemaColor.primary),
-                bubblesColor: BubblesColor(
-                  dotPrimaryColor: SchemaColor.primary.withOpacity(0.5),
-                  dotSecondaryColor: SchemaColor.primary,
-                ),
-                // isLiked: controller.isLiked.value,
-                // isLiked: Future.value(controller.isLiked.value),
-                likeBuilder: (bool isLiked) {
-                  return FutureBuilder(
-                    initialData: isLiked,
-                    future: controller.isLikedPost(postId!),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
+                builder: (LikeController controller) {
+                  return LikeButton(
+                    size: 20,
+                    circleColor: CircleColor(
+                        start: Colors.redAccent, end: Colors.redAccent),
+                    bubblesColor: BubblesColor(
+                      dotPrimaryColor: Colors.redAccent,
+                      dotSecondaryColor: Colors.redAccent,
+                    ),
+                    isLiked: controller.isLiked.value,
+                    likeBuilder: (bool isLiked) {
+                      // isLiked = controller.isLiked.value;
+                      return Obx(() {
                         return Icon(
-                            snapshot.data!
-                                ? Icons.favorite
-                                : Icons.favorite_border,
-                            color: snapshot.data!
-                                ? SchemaColor.primary
-                                : Colors.black);
-                      } else {
-                        return const Icon(Icons.favorite_border);
-                      }
+                          Icons.favorite,
+                          color: controller.isLiked.value
+                              ? Colors.redAccent
+                              : Colors.grey,
+                          size: 20,
+                        );
+                      });
                     },
-                  );
-                },
-                likeCount: likeCount,
-                countBuilder: (int? count, bool isLiked, String text) {
-                  // future builder
-                  return FutureBuilder(
-                    // initialData: co,
-                    future: controller.countLike(postId!),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
+                    likeCount: controller.countLike.value == ''
+                        ? 0
+                        : int.parse(controller.countLike.value),
+                    countBuilder: (int? count, bool isLiked, String text) {
+                      var color = isLiked ? Colors.redAccent : Colors.grey;
+                      return Obx(() {
                         return Text(
-                          snapshot.data.toString(),
-                          style: TextStyle(color: Colors.grey),
+                          controller.countLike.value == ''
+                              ? '0'
+                              : controller.countLike.value,
+                          style: TextStyle(color: color),
                         );
-                      } else {
-                        return const Text(
-                          '0',
-                          style: TextStyle(color: Colors.grey),
-                        );
-                      }
+                      });
+                    },
+                    onTap: (bool isLiked) async {
+                      Future.delayed(const Duration(milliseconds: 100), () {
+                        controller.likePost(postId!);
+                        // controller.getCountLike(postId!);
+                        // controller.checkLike(postId!);
+                      });
+                      return !isLiked;
                     },
                   );
                 }),
@@ -90,8 +84,14 @@ class PostActions extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.download_outlined),
-              onPressed: () {},
+              onPressed: () async {
+                Get.lazyPut<DownloaderController>(() => DownloaderController());
+                await Get.find<DownloaderController>()
+                    .downloadImage(pathImage.toString()!, whenError: true);
+                Get.find<DownloaderController>().onInit();
+              },
             ),
+            // Text(controller..value),
           ],
         ),
         IconButton(
@@ -104,7 +104,7 @@ class PostActions extends StatelessWidget {
 
   Widget _isLiked(id) {
     return FutureBuilder(
-      future: controller.isLikedPost(id),
+      future: controller.checkLike(id),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return Icon(snapshot.data! ? Icons.favorite : Icons.favorite_border,

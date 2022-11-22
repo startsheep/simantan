@@ -6,7 +6,10 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:simantan/app/controllers/image_picker_controller.dart';
 import 'package:simantan/app/controllers/post_controller.dart';
+import 'package:simantan/app/models/lazy_loading_filter.dart';
 import 'package:simantan/app/modules/auth/controllers/auth_controller.dart';
+import 'package:simantan/app/modules/home/providers/post_provider.dart';
+import 'package:simantan/app/modules/profile/controllers/user_post_controller.dart';
 import 'package:simantan/app/providers/user_provider.dart';
 import 'package:simantan/app/services/auth_services.dart';
 import 'package:simantan/app/theme/colors.dart';
@@ -24,19 +27,17 @@ class ProfileController extends GetxController {
   TextEditingController emailController = TextEditingController();
   Map<String, dynamic> user = {};
   Rx<XFile> image = XFile('').obs;
-  RxBool isLoading = true.obs;
 
   @override
   void onInit() {
     super.onInit();
     Get.lazyPut<AuthController>(() => AuthController());
-    Get.lazyPut<PostController>(() => PostController());
+    Get.lazyPut<UserPostController>(() => UserPostController());
+
     Get.lazyPut<UserProvider>(() => UserProvider());
-    postController = Get.find<PostController>();
     authController = Get.find<AuthController>();
+
     Get.lazyPut<ImagePickerController>(() => ImagePickerController());
-    ever(postController.paginationFilter, (_) => postController.getMyPosts());
-    postController.changePaginationFilter(1, 15);
   }
 
   void getImageFromGallery() async {
@@ -57,16 +58,15 @@ class ProfileController extends GetxController {
 
   void getUser() async {
     print('get user');
+    print(AuthServices.getUser);
     final response = await Get.find<UserProvider>()
         .getUser(AuthServices.getUserId.toString());
 
     if (response.statusCode == 200) {
+      AuthServices.setUser = response.body['data'];
       nameController.value.text = response.body['data']['name'];
       nipController.value.text = response.body['data']['nip'];
       avatarUrl.value = response.body['data']['image'];
-
-      // AuthServices.setUser = json.encode(response.body['data']);
-      isLoading.value = false;
     }
   }
 
@@ -75,12 +75,12 @@ class ProfileController extends GetxController {
       userId: AuthServices.getUserId.toString(),
       name: nameController.value.text,
       nip: nipController.value.text,
-      image: File(image.value.path),
+      image: image.value.path.isNotEmpty ? File(image.value.path) : null,
     );
-    print(response.body);
+
     if (response.statusCode == 200) {
-      getUser();
       Get.back();
+      getUser();
       Get.snackbar(
         'Success',
         'Sudah diupdate yaa',

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 // import 'package:simantan/app/modules/comment/controllers/comment_controller.dart';
 import 'package:simantan/app/controllers/post_controller.dart';
 import 'package:simantan/app/modules/comment/controllers/comment_controller.dart';
+import 'package:simantan/app/modules/post/controllers/like_controller.dart';
 import 'package:simantan/app/providers/comment_provider.dart';
 import 'package:simantan/app/routes/app_pages.dart';
 
@@ -17,11 +18,12 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     Get.lazyPut<PostController>(() => PostController());
+    Get.lazyPut<LikeController>(() => LikeController());
     Get.lazyPut<CommentProvider>(() => CommentProvider());
     postController = Get.find<PostController>();
     postController.onInit();
     ever(postController.paginationFilter, (_) => postController.fetchPosts());
-    postController.changePaginationFilter(1, 5);
+    postController.changePaginationFilter(1, 10);
   }
 
   @override
