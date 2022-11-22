@@ -66,7 +66,9 @@ class HomeView extends GetView<HomeController> {
                     child: CircularProgressIndicator(),
                   )
                 : LazyLoadScrollView(
-                    scrollOffset: 150,
+                    // scrollOffset: ,
+                    // scroll offset make the scrollview not scroll to the top when load more
+                    // scrollOffset: 10,
                     isLoading: controller.postController.lastPage,
                     onEndOfPage: () => controller.postController.loadNextPage(),
                     child: RefreshIndicator(
@@ -103,6 +105,7 @@ class HomeView extends GetView<HomeController> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 PostUser(
+                                  userId: post['user']['id'].toString(),
                                   avatarUrl: post['user']['image'],
                                   username: post['user']['name'],
                                   isActive: post['user']['is_active'] == 1
@@ -113,8 +116,10 @@ class HomeView extends GetView<HomeController> {
                                   contentUrl: post['image'],
                                 ),
                                 PostActions(
+                                  key: UniqueKey(),
                                   postId: post['id'],
                                   likeCount: post['countLike'],
+                                  pathImage: post['image'],
                                 ),
                                 PostDescription(
                                   username: post['user']['name'],
@@ -140,7 +145,8 @@ class HomeView extends GetView<HomeController> {
                                           child: CircleAvatar(
                                             radius: 15,
                                             backgroundImage: NetworkImage(
-                                                AuthServices.getUser['image'] ??
+                                                AuthServices.getUser['image']
+                                                        .toString() ??
                                                     'https://i.pravatar.cc/150?img=1'),
                                           ),
                                         ),
@@ -177,8 +183,6 @@ class HomeView extends GetView<HomeController> {
                                     ),
                                   ],
                                 ),
-
-                                //make section comment
                               ],
                             ),
                           );
