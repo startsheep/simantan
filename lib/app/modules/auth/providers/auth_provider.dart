@@ -21,4 +21,19 @@ class AuthProvider extends GetConnect {
       'Authorization': 'Bearer ' + AuthServices.getToken,
     });
   }
+
+  Future<Response> changePassword(
+      {String? oldPass, String? newPass, String? confirmPass}) {
+    return put(
+      'user/change-password/${AuthServices.getUserId}',
+      {
+        'old_password': oldPass,
+        'new_password': newPass,
+        'confirm_password': confirmPass,
+      },
+      headers: {
+        'Authorization': 'Bearer ' + AuthServices.getToken,
+      },
+    );
+  }
 }

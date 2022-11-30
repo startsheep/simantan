@@ -33,9 +33,11 @@ class PostProvider extends GetConnect {
     });
   }
 
-  Future<Response> updatePost(String postId, {String? description}) async {
+  Future<Response> updatePost(String postId,
+      {String? description, String? flagId}) async {
     return await put('post/$postId', {
       'description': description!,
+      'flag_id': flagId!,
     }, headers: {
       'Authorization': 'Bearer ' + AuthServices.getToken,
     });
@@ -50,7 +52,7 @@ class PostProvider extends GetConnect {
         'Authorization': 'Bearer ' + AuthServices.getToken,
       }, query: {
         'search': search,
-        'flag_id': flagId,
+        // 'flag_id': '1',
         'page': filter.page.toString(),
         'per_page': filter.limit.toString(),
       });

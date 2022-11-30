@@ -25,37 +25,7 @@ class ProfileView extends GetView<ProfileController> {
               color: Colors.black,
             ),
             onPressed: () {
-              Get.bottomSheet(
-                Container(
-                  height: 200,
-                  color: Colors.white,
-                  child: Column(
-                    children: [
-                      ListTile(
-                        leading: const Icon(Icons.logout),
-                        title: const Text('Logout'),
-                        onTap: () {
-                          // confirm dialog
-                          Get.defaultDialog(
-                            title: 'Logout',
-                            middleText: 'Apakah anda yakin ingin logout?',
-                            textConfirm: 'Ya',
-                            textCancel: 'Tidak',
-                            confirmTextColor: Colors.white,
-                            cancelTextColor:
-                                const Color.fromARGB(255, 23, 22, 22),
-                            buttonColor: SchemaColor.primary,
-                            onConfirm: () {
-                              Get.back();
-                              controller.authController.logout();
-                            },
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              );
+              _showBottomSheet();
             },
           ),
         ],
@@ -119,6 +89,52 @@ class ProfileView extends GetView<ProfileController> {
           ],
         ),
       ),
+    );
+  }
+
+  Future<dynamic> _showBottomSheet() {
+    return Get.bottomSheet(
+      Container(
+        height: 200,
+        color: Colors.white,
+        child: Column(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Logout'),
+              onTap: () {
+                // confirm dialog
+                _confirmLogout();
+              },
+            ),
+            // change password
+            ListTile(
+              leading: const Icon(Icons.lock),
+              title: const Text('Ganti Password'),
+              onTap: () {
+                Get.back();
+                Get.toNamed(Routes.RESET_PASSWORD);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<dynamic> _confirmLogout() {
+    return Get.defaultDialog(
+      title: 'Keluar',
+      middleText: 'Apakah anda yakin ingin keluar?',
+      textConfirm: 'Ya',
+      textCancel: 'Tidak',
+      confirmTextColor: Colors.white,
+      cancelTextColor: const Color.fromARGB(255, 23, 22, 22),
+      buttonColor: SchemaColor.primary,
+      onConfirm: () {
+        Get.back();
+        controller.authController.logout();
+      },
     );
   }
 }

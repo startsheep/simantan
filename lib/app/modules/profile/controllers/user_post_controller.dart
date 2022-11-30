@@ -65,9 +65,11 @@ class UserPostController extends GetxController {
     }
   }
 
-  void updatePost(String? id) async {
+  void updatePost(String? id, flagId) async {
     isLoading.value = true;
-    final response = await Get.find<PostProvider>().updatePost(id!);
+    final response = await Get.find<PostProvider>().updatePost(id!,
+        description: descriptionController.value.text, flagId: flagId);
+    print(response.body);
     if (response.statusCode == 200) {
       Get.back();
       isLoading.value = false;
@@ -77,6 +79,13 @@ class UserPostController extends GetxController {
       getMyPosts();
       // refresh();
     }
+  }
+
+  Future<void> refreshPage() async {
+    isLoading.value = true;
+    _myPosts.clear();
+    // getMyPosts();
+    changePaginationFilter(1, 15);
   }
 
   void changePaginationFilter(int page, int limit) {

@@ -72,7 +72,7 @@ class HomeView extends GetView<HomeController> {
                     isLoading: controller.postController.lastPage,
                     onEndOfPage: () => controller.postController.loadNextPage(),
                     child: RefreshIndicator(
-                      onRefresh: () => controller.refreshPage(),
+                      onRefresh: () => controller.postController.refresh(),
                       child: ListView.builder(
                         itemCount: controller.postController.posts.length,
                         itemBuilder: (context, index) {

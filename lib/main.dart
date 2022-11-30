@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:simantan/app/services/auth_services.dart';
+import 'package:simantan/app/theme/colors.dart';
 import 'package:sp_util/sp_util.dart';
 
 import 'app/routes/app_pages.dart';
@@ -14,7 +15,7 @@ void main() async {
       // darkTheme: ThemeData.dark(useMaterial3: true),
       debugShowCheckedModeBanner: false,
       title: "SIMANTAN",
-
+      theme: SchemaColor.getTheme,
       initialRoute: AuthServices.getAuth ? Routes.CORE : Routes.AUTH,
       getPages: AppPages.routes,
     ),

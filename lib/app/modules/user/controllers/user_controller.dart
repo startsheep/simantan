@@ -35,6 +35,12 @@ class UserController extends GetxController {
     super.onClose();
   }
 
+  Future<void> refreshPage() async {
+    isLoading.value = true;
+    _posts.clear();
+    changePaginationFilter(1, 15);
+  }
+
   Future<void> getUserPosts() async {
     print('getUserPosts');
     // isLoading.value = true;

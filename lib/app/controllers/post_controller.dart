@@ -136,17 +136,19 @@ class PostController extends GetxController {
   }
 
   void loadNextPage() => changePaginationFilter(_page + 1, _limit);
-
-  String randomStringWord() {
-    var random = Random();
-    //make random word
-    var word = List.generate(random.nextInt(10) + 5, (index) {
-      return String.fromCharCode(random.nextInt(26) + 97);
-    });
-    return word.join();
+  @override
+  Future<void> refresh() async {
+    // TODO: implement refresh
+    super.refresh();
+    _posts.clear();
+    isLoading.value = true;
+    _lastPage.value = false;
+    changePaginationFilter(1, _limit);
   }
 
-  void onSuccessPost() {
-    // show
-  }
+  // @override
+  // void update([List<Object>? ids, bool condition = true]) {
+  //   // TODO: implement update
+  //   super.update(ids, condition);
+  // }
 }

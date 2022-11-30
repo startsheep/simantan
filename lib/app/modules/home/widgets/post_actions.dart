@@ -4,6 +4,7 @@ import 'package:like_button/like_button.dart';
 import 'package:simantan/app/controllers/post_controller.dart';
 import 'package:simantan/app/modules/post/controllers/downloader_controller.dart';
 import 'package:simantan/app/modules/post/controllers/like_controller.dart';
+import 'package:simantan/app/routes/app_pages.dart';
 import 'package:simantan/app/theme/colors.dart';
 
 class PostActions extends GetView<LikeController> {
@@ -80,7 +81,10 @@ class PostActions extends GetView<LikeController> {
                 }),
             IconButton(
               icon: const Icon(Icons.comment_outlined),
-              onPressed: () {},
+              onPressed: () {
+                Get.toNamed(Routes.COMMENT,
+                    parameters: {'postId': postId.toString()!});
+              },
             ),
             IconButton(
               icon: const Icon(Icons.download_outlined),
@@ -94,10 +98,10 @@ class PostActions extends GetView<LikeController> {
             // Text(controller..value),
           ],
         ),
-        IconButton(
-          icon: const Icon(Icons.bookmark_border),
-          onPressed: () {},
-        ),
+        // IconButton(
+        //   icon: const Icon(Icons.bookmark_border),
+        //   onPressed: () {},
+        // ),
       ],
     );
   }

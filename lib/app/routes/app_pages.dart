@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:simantan/app/modules/profile/views/update_profile_view.dart';
 
 import '../modules/auth/bindings/auth_binding.dart';
 import '../modules/auth/views/auth_view.dart';
@@ -13,12 +12,15 @@ import '../modules/post/bindings/post_binding.dart';
 import '../modules/post/views/post_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
+import '../modules/profile/views/update_profile_view.dart';
+import '../modules/resetPassword/bindings/reset_password_binding.dart';
+import '../modules/resetPassword/views/reset_password_view.dart';
 import '../modules/search/bindings/search_binding.dart';
 import '../modules/search/views/search_view.dart';
 import '../modules/test/bindings/test_binding.dart';
 import '../modules/test/views/test_view.dart';
-import '../modules/users/bindings/users_binding.dart';
-import '../modules/users/views/users_view.dart';
+import '../modules/user/bindings/user_binding.dart';
+import '../modules/user/views/user_view.dart';
 
 part 'app_routes.dart';
 
@@ -75,14 +77,19 @@ class AppPages {
       binding: SearchBinding(),
     ),
     GetPage(
-      name: _Paths.USERS,
-      page: () => const UsersView(),
-      binding: UsersBinding(),
-    ),
-    GetPage(
       name: _Paths.COMMENT,
       page: () => const CommentView(),
       binding: CommentBinding(),
+    ),
+    GetPage(
+      name: _Paths.USER,
+      page: () => const UserView(),
+      binding: UserBinding(),
+    ),
+    GetPage(
+      name: _Paths.RESET_PASSWORD,
+      page: () => ResetPasswordView(),
+      binding: ResetPasswordBinding(),
     ),
   ];
 }
