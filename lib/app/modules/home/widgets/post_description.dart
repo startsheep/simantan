@@ -64,18 +64,21 @@ class PostDescription extends StatelessWidget {
           // make hastag clickable
           const SizedBox(height: 5),
           // see comment like instagram comment with gesture detector
-          InkWell(
-            onTap: () {
-              Get.toNamed(Routes.COMMENT, parameters: {'postId': postId!});
-            },
-            child: Text(
-              "Lihat $countComment komentar",
-              style: const TextStyle(
-                color: Color.fromARGB(255, 102, 102, 102),
-                fontSize: 14,
-              ),
-            ),
-          ),
+          countComment != '0'
+              ? InkWell(
+                  onTap: () {
+                    Get.toNamed(Routes.COMMENT,
+                        parameters: {'postId': postId!});
+                  },
+                  child: Text(
+                    "Lihat $countComment komentar",
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 102, 102, 102),
+                      fontSize: 14,
+                    ),
+                  ),
+                )
+              : SizedBox(),
 
           const SizedBox(height: 5),
           // see comment like instagram.com

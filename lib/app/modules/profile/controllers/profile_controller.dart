@@ -79,8 +79,10 @@ class ProfileController extends GetxController {
     );
 
     if (response.statusCode == 200) {
-      Get.back();
       getUser();
+      Get.delete<ProfileController>(force: true);
+      Get.lazyPut<ProfileController>(() => ProfileController());
+      Get.back();
       Get.snackbar(
         'Success',
         'Sudah diupdate yaa',

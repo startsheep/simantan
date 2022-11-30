@@ -61,7 +61,7 @@ class SearchController extends GetxController {
     final response = await Get.find<PostProvider>().getPosts(
       paginationFilter.value,
       search: searchText.value,
-      flagId: selectedFlagId.value.toString(),
+      flagId: selectedFlagId.value,
     );
     print(response.statusCode);
     print(response.body);

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
+import 'package:simantan/app/modules/home/widgets/post_actions.dart';
+import 'package:simantan/app/modules/home/widgets/post_description.dart';
 
 import '../controllers/user_controller.dart';
 
@@ -59,7 +61,7 @@ class UserView extends GetView<UserController> {
                               isLoading: controller.lastPage,
                               onEndOfPage: () => controller.loadNextPage(),
                               child: RefreshIndicator(
-                                onRefresh: () => controller.getUserPosts(),
+                                onRefresh: () => controller.refreshPage(),
                                 child: GridView.builder(
                                   padding: EdgeInsets.symmetric(horizontal: 10),
                                   gridDelegate:
@@ -70,9 +72,11 @@ class UserView extends GetView<UserController> {
                                   ),
                                   itemCount: controller.posts.length,
                                   itemBuilder: (context, index) {
+                                    final post = controller.posts[index];
                                     return InkWell(
                                       onTap: () {
                                         // make dialog like instagram
+                                        showDetail(post);
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
@@ -122,6 +126,87 @@ class UserView extends GetView<UserController> {
                             ),
                 ),
               )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActions(int postId, flagId) {
+    return Container(
+      padding: EdgeInsets.all(10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () {
+              Get.back();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  void showDetail(dynamic post) {
+    Get.dialog(
+      Dialog(
+        // backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.zero,
+        child: Container(
+          color: Colors.transparent,
+          width: Get.width,
+          height: Get.height,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // action for close dialog or delete post or edit
+              _buildActions(post['id'], post['flag']['id']),
+              Expanded(
+                child: ListView(
+                  children: [
+                    Container(
+                      margin:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      // padding: EdgeInsets.all(10),
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                      child: Image.network(
+                        post['image'],
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Expanded(
+                        child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: PostActions(
+                            postId: post['id'],
+                            likeCount: post['countLike'],
+                            pathImage: post['image'],
+                          ),
+                        ),
+                        PostDescription(
+                          postId: post['id'].toString(),
+                          username: post['user']['name'],
+                          description: post['description'],
+                          hastag: post['flag']['name'],
+                          countComment: post['countComment'].toString(),
+                          time: post['created_at'],
+                        ),
+                      ],
+                    )),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

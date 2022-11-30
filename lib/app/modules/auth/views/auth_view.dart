@@ -102,21 +102,25 @@ class AuthView extends GetView<AuthController> {
                         duration: Duration(milliseconds: 500),
                         width: double.infinity,
                         child: controller.isSubmit.value == false
-                            ? ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: SchemaColor.primary,
-                                  padding: EdgeInsets.all(12),
-                                ),
-                                onPressed: () {
-                                  if (formKey.currentState!.validate())
-                                    controller.login();
-                                },
-                                child: Text(
-                                  'Masuk',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
+                            ? AnimatedContainer(
+                                duration: Duration(milliseconds: 500),
+                                curve: Curves.easeIn,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: SchemaColor.primary,
+                                    padding: EdgeInsets.all(12),
+                                  ),
+                                  onPressed: () {
+                                    if (formKey.currentState!.validate())
+                                      controller.login();
+                                  },
+                                  child: Text(
+                                    'Masuk',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
                               )
                             : Center(

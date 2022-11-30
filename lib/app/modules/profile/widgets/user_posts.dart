@@ -26,7 +26,7 @@ class UserPostsWidget extends GetView<UserPostController> {
                   isLoading: controller.lastPage,
                   onEndOfPage: () => controller.loadNextPage(),
                   child: RefreshIndicator(
-                    onRefresh: () => controller.getMyPosts(),
+                    onRefresh: () => controller.refreshPage(),
                     child: GridView.builder(
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       gridDelegate:
@@ -91,7 +91,7 @@ class UserPostsWidget extends GetView<UserPostController> {
     );
   }
 
-  Widget _buildActions(int postId) {
+  Widget _buildActions(int postId, flagId) {
     return Container(
       padding: EdgeInsets.all(10),
       child: Row(
@@ -114,7 +114,7 @@ class UserPostsWidget extends GetView<UserPostController> {
             icon: const Icon(Icons.edit),
             onPressed: () {
               // make dialog edit post
-              updateDialog(postId.toString());
+              updateDialog(postId.toString(), flagId.toString());
             },
           ),
         ],
@@ -137,7 +137,7 @@ class UserPostsWidget extends GetView<UserPostController> {
     );
   }
 
-  void updateDialog(String idPost) {
+  void updateDialog(String idPost, String flagId) {
     Get.defaultDialog(
       title: 'Edit Postingan',
       content: Container(
@@ -153,7 +153,7 @@ class UserPostsWidget extends GetView<UserPostController> {
             ButtonPrimary(
               label: 'Simpan',
               onPressed: () {
-                controller.updatePost(idPost);
+                controller.updatePost(idPost, flagId);
               },
             ),
           ],
@@ -176,38 +176,49 @@ class UserPostsWidget extends GetView<UserPostController> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // action for close dialog or delete post or edit
-              _buildActions(post['id']),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                // padding: EdgeInsets.all(10),
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10),
-                  ),
-                ),
-                child: Image.network(
-                  post['image'],
-                  fit: BoxFit.cover,
+              _buildActions(post['id'], post['flag']['id']),
+              Expanded(
+                child: ListView(
+                  children: [
+                    Container(
+                      margin:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      // padding: EdgeInsets.all(10),
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                      child: Image.network(
+                        post['image'],
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Expanded(
+                        child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: PostActions(
+                            postId: post['id'],
+                            likeCount: post['countLike'],
+                            pathImage: post['image'],
+                          ),
+                        ),
+                        PostDescription(
+                          postId: post['id'].toString(),
+                          username: post['user']['name'],
+                          description: post['description'],
+                          hastag: post['flag']['name'],
+                          countComment: post['countComment'].toString(),
+                          time: post['created_at'],
+                        ),
+                      ],
+                    )),
+                  ],
                 ),
               ),
-              Expanded(
-                  child: Column(
-                children: [
-                  PostActions(
-                    postId: post['id'],
-                    likeCount: post['countLike'],
-                    pathImage: post['image'],
-                  ),
-                  PostDescription(
-                    username: post['user']['name'],
-                    description: post['description'],
-                    hastag: post['flag']['name'],
-                    countComment: post['countComment'].toString(),
-                    time: post['created_at'],
-                  ),
-                ],
-              )),
             ],
           ),
         ),
