@@ -40,6 +40,10 @@ class PostActions extends GetView<LikeController> {
                   controller.getCountLike(postId!);
                   controller.checkLike(postId!);
                 },
+                didUpdateWidget: (oldWidget, state) {
+                  controller.getCountLike(postId!);
+                  controller.checkLike(postId!);
+                },
                 builder: (LikeController controller) {
                   return LikeButton(
                     size: 20,
