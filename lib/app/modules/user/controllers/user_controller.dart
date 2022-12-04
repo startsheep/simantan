@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:simantan/app/models/lazy_loading_filter.dart';
 import 'package:simantan/app/modules/home/providers/post_provider.dart';
+import 'package:simantan/app/providers/user_provider.dart';
+import 'package:simantan/app/services/auth_services.dart';
 
 class UserController extends GetxController {
   //TODO: Implement UserController
@@ -12,6 +14,8 @@ class UserController extends GetxController {
   int get _limit => paginationFilter.value.limit!;
   int get _page => paginationFilter.value.page!;
   bool get lastPage => _lastPage.value;
+  RxInt countLike = 0.obs;
+  RxInt countPost = 0.obs;
 
   RxBool isLoading = true.obs;
   final paginationFilter = LazyLoadingFilter().obs;
@@ -19,7 +23,9 @@ class UserController extends GetxController {
   @override
   void onInit() {
     Get.lazyPut<PostProvider>(() => PostProvider());
+    Get.lazyPut<UserProvider>(() => UserProvider());
     Get.find<PostProvider>().onInit();
+    Get.find<UserProvider>().onInit();
     super.onInit();
   }
 
@@ -28,6 +34,8 @@ class UserController extends GetxController {
     super.onReady();
     ever(paginationFilter, (_) => getUserPosts());
     changePaginationFilter(1, 15);
+    getCountLike();
+    getCountPost();
   }
 
   @override
@@ -72,4 +80,21 @@ class UserController extends GetxController {
   }
 
   void loadNextPage() => changePaginationFilter(_page + 1, _limit);
+  void getCountPost() async {
+    final response = await Get.find<UserProvider>()
+        .getCountPost(int.parse(Get.parameters['userId']!));
+    print(response.body);
+    if (response.statusCode == 200) {
+      countPost.value = response.body['data'];
+    }
+  }
+
+  void getCountLike() async {
+    final response = await Get.find<UserProvider>()
+        .getCountLike(int.parse(Get.parameters['userId']!));
+    print(response.body);
+    if (response.statusCode == 200) {
+      countLike.value = response.body['data'];
+    }
+  }
 }
