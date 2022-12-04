@@ -30,7 +30,7 @@ class SchemaColor {
       backgroundColor: background,
       scaffoldBackgroundColor: surface,
       errorColor: error,
-      fontFamily: GoogleFonts.montserrat().fontFamily,
+      fontFamily: GoogleFonts.poppins().fontFamily,
     );
   }
 }
