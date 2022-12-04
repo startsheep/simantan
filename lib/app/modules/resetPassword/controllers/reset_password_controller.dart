@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:simantan/app/modules/auth/providers/auth_provider.dart';
