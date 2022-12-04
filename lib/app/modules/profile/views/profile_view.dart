@@ -5,6 +5,7 @@ import 'package:simantan/app/routes/app_pages.dart';
 import 'package:simantan/app/services/auth_services.dart';
 import 'package:simantan/app/theme/colors.dart';
 import 'package:simantan/app/widgets/button_primary.dart';
+import 'package:simantan/app/widgets/count_widget.dart';
 import '../controllers/profile_controller.dart';
 
 class ProfileView extends GetView<ProfileController> {
@@ -34,57 +35,78 @@ class ProfileView extends GetView<ProfileController> {
       // make like profile instagram
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(10),
-              child: Row(
-                children: [
-                  Container(
-                    child: CircleAvatar(
-                      radius: 45,
-                      backgroundColor: const Color.fromARGB(255, 111, 255, 116),
-                      child: CircleAvatar(
-                        radius: 43,
-                        // foregroundColor: SchemaColor.primary,
-                        backgroundImage: AssetImage('assets/avatar_l.jpg'),
-                        foregroundImage: NetworkImage(
-                            AuthServices.getUser['image'].toString()),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 20),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        AuthServices.getUser['name'],
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        AuthServices.getUser['nip'],
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w300,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+              child: CircleAvatar(
+                radius: 45,
+                backgroundColor: const Color.fromARGB(255, 111, 255, 116),
+                child: CircleAvatar(
+                  radius: 43,
+                  // foregroundColor: SchemaColor.primary,
+                  backgroundImage: AssetImage('assets/avatar_l.jpg'),
+                  foregroundImage:
+                      NetworkImage(AuthServices.getUser['image'].toString()),
+                ),
               ),
             ),
+            const SizedBox(height: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  AuthServices.getUser['name'],
+                  style: const TextStyle(
+                    fontSize: 20,
+                    color: SchemaColor.dFontColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  AuthServices.getUser['nip'],
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+              ],
+            ),
+            Obx(() {
+              return Container(
+                width: Get.width / 2,
+                child: Row(
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      // flex: 5,
+                      child: CountWidget(
+                        count: controller.countPost.value,
+                        title: "Postingan",
+                      ),
+                    ),
+                    Expanded(
+                      // flex: 5,
+                      child: CountWidget(
+                        count: controller.countLike.value,
+                        title: "Suka",
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
             Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: ButtonPrimary(
-                  label: "Edit Profil",
-                  onPressed: () {
-                    Get.toNamed(Routes.PROFILE_UPDATE);
-                  },
-                )),
-            const Divider(),
+              padding: const EdgeInsets.all(10.0),
+              child: ButtonPrimary(
+                label: "Edit Profil",
+                onPressed: () {
+                  Get.toNamed(Routes.PROFILE_UPDATE);
+                },
+              ),
+            ),
             Expanded(child: const UserPostsWidget())
           ],
         ),

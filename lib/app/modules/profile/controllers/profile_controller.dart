@@ -3,12 +3,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:simantan/app/controllers/image_picker_controller.dart';
 import 'package:simantan/app/controllers/post_controller.dart';
 import 'package:simantan/app/models/lazy_loading_filter.dart';
 import 'package:simantan/app/modules/auth/controllers/auth_controller.dart';
 import 'package:simantan/app/modules/home/providers/post_provider.dart';
+import 'package:simantan/app/modules/post/controllers/like_controller.dart';
 import 'package:simantan/app/modules/profile/controllers/user_post_controller.dart';
 import 'package:simantan/app/providers/user_provider.dart';
 import 'package:simantan/app/services/auth_services.dart';
@@ -27,17 +29,21 @@ class ProfileController extends GetxController {
   TextEditingController emailController = TextEditingController();
   Map<String, dynamic> user = {};
   Rx<XFile> image = XFile('').obs;
+  RxInt countLike = 0.obs;
+  RxInt countPost = 0.obs;
 
   @override
   void onInit() {
     super.onInit();
     Get.lazyPut<AuthController>(() => AuthController());
     Get.lazyPut<UserPostController>(() => UserPostController());
-
+    // Get.lazyPut<LikeController>(() => LikeController());
     Get.lazyPut<UserProvider>(() => UserProvider());
     authController = Get.find<AuthController>();
 
     Get.lazyPut<ImagePickerController>(() => ImagePickerController());
+    getCountPost();
+    getCountLike();
   }
 
   void getImageFromGallery() async {
@@ -94,6 +100,24 @@ class ProfileController extends GetxController {
       );
     } else {
       Get.snackbar('Failed', 'Gagal update');
+    }
+  }
+
+  void getCountPost() async {
+    final response =
+        await Get.find<UserProvider>().getCountPost(AuthServices.getUserId);
+    print(response.body);
+    if (response.statusCode == 200) {
+      countPost.value = response.body['data'];
+    }
+  }
+
+  void getCountLike() async {
+    final response =
+        await Get.find<UserProvider>().getCountLike(AuthServices.getUserId);
+    print(response.body);
+    if (response.statusCode == 200) {
+      countLike.value = response.body['data'];
     }
   }
 
