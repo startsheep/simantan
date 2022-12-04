@@ -2,10 +2,15 @@ import 'package:chips_choice/chips_choice.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:simantan/app/data/source_dummy.dart';
+import 'package:simantan/app/modules/core/controllers/core_controller.dart';
 import 'package:simantan/app/modules/home/widgets/post_actions.dart';
 import 'package:simantan/app/modules/home/widgets/post_content.dart';
 import 'package:simantan/app/modules/home/widgets/post_description.dart';
 import 'package:simantan/app/modules/home/widgets/post_user.dart';
+import 'package:simantan/app/routes/app_pages.dart';
+import 'package:simantan/app/services/auth_services.dart';
 import 'package:simantan/app/theme/colors.dart';
 import 'package:simantan/app/widgets/reuse_textfield.dart';
 
@@ -41,7 +46,14 @@ class SearchView extends GetView<SearchController> {
                     controller: controller.searchController.value,
                     suffixIcon: Icons.search,
                     hintText: "Cari",
-                    onChanged: (value) => controller.searchText.value = value,
+                    onChanged: (value) {
+                      if (controller.selectedTab.value == 0) {
+                        controller.searchTextFlag.value = value;
+                      } else if (controller.selectedTab.value == 1) {
+                        controller.searchTextPost.value = value;
+                      } else if (controller.selectedTab.value == 2) {}
+                      controller.searchTextUser.value = value;
+                    },
                   ),
                   Divider(),
                   // Tabs Tagar or Post
@@ -111,7 +123,22 @@ class SearchView extends GetView<SearchController> {
         child: ListView.builder(
       itemCount: controller.users.length,
       itemBuilder: (context, index) {
+        final user = controller.users[index];
         return ListTile(
+          onTap: () {
+            if (user['id'].toString() == AuthServices.getUserId.toString()) {
+              Get.find<CoreController>().currentPage.value = 3;
+            } else {
+              Get.toNamed(
+                Routes.USER,
+                parameters: {
+                  'username': user['name'],
+                  'userId': user['id'].toString(),
+                  'avatarUrl': user['image'],
+                },
+              );
+            }
+          },
           leading: CircleAvatar(
             backgroundImage: NetworkImage(controller.users[index]['image']),
           ),
@@ -125,104 +152,132 @@ class SearchView extends GetView<SearchController> {
   Widget _buildPosts() {
     // like home
     return Expanded(
-      child: ListView.builder(
-        itemCount: controller.posts.length,
-        itemBuilder: (context, index) {
-          final post = controller.posts[index];
-          return Container(
-            margin: EdgeInsets.symmetric(
-              vertical: 16,
+      child: controller.isLoading.value
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : ListView.builder(
+              itemCount: controller.posts.length,
+              itemBuilder: (context, index) {
+                final post = controller.posts[index];
+                return Container(
+                  margin: EdgeInsets.symmetric(
+                    vertical: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        spreadRadius: 1,
+                        blurRadius: 7,
+                        offset: Offset(0, 3), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      PostUser(
+                        userId: post['user']['id'].toString(),
+                        username: post['user']['name'],
+                        avatarUrl: post['user']['image'],
+                        isActive: post['user']['is_active'] ?? false,
+                      ),
+                      PostContent(
+                        contentUrl: post['image'],
+                      ),
+
+                      PostActions(
+                        postId: post['id'],
+                        pathImage: post['image'],
+                        userName: post['user']['name'],
+                        likeCount: post['like_count'],
+                      ),
+                      // PostActions(
+                      //   postId: controller.posts[index]['id'],
+                      // ),
+                      PostDescription(
+                        username: post['user']['name'],
+                        description: post['description'],
+                        hastag: post['flag']['name'],
+                        time: post['created_at'],
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                PostUser(
-                  username: post['user']['name'],
-                  avatarUrl: post['user']['image'],
-                  isActive: post['user']['is_active'] ?? false,
-                ),
-                PostContent(
-                  contentUrl: post['image'],
-                ),
-                Divider(),
-                // PostActions(
-                //   postId: controller.posts[index]['id'],
-                // ),
-                PostDescription(
-                  username: post['user']['name'],
-                  description: post['description'],
-                  hastag: post['flag']['name'],
-                  time: post['created_at'],
-                )
-              ],
-            ),
-          );
-        },
-      ),
     );
   }
 
   Widget _buildHashtag() {
     // make grid view box show label and count post
-    return controller.flags.length > 0
-        ? Expanded(
-            // make grid view box show label and count post with animation
-
-            child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-              ),
-              itemCount: controller.flags.length,
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () {
-                    controller.searchText.value =
-                        controller.flags[index]['name'];
-                    controller.selectedFlagId.value =
-                        controller.flags[index]['id'].toString();
-                    controller.selectedTab.value = 1;
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 1,
-                          blurRadius: 2,
-                          offset: Offset(0, 2), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          parseToHashTag(controller.flags[index]['name']),
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w600),
-                        ),
-                        Text(
-                          controller.flags[index]['total'] == '0'
-                              ? 'Belum ada Postingan'
-                              : controller.flags[index]['total'].toString() +
-                                  ' Postingan',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+    return controller.isLoading.value
+        ? Center(
+            child: CircularProgressIndicator(),
           )
-        : Center(
-            child: Text('Tidak ada data'),
-          );
+        : controller.flags.length > 0
+            ? Expanded(
+                // make grid view box show label and count post with animation
+
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                  ),
+                  itemCount: controller.flags.length,
+                  itemBuilder: (context, index) {
+                    final flag = controller.flags[index];
+                    return InkWell(
+                      onTap: () {
+                        controller.selectedFlagId.value = flag['id'].toString();
+                        controller.selectedTab.value = 1;
+                        print(controller.selectedFlagId.value);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 1,
+                              blurRadius: 2,
+                              offset:
+                                  Offset(0, 2), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              parseToHashTag(controller.flags[index]['name']),
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w600),
+                            ),
+                            Text(
+                              controller.flags[index]['total'] == '0'
+                                  ? 'Belum ada Postingan'
+                                  : controller.flags[index]['total']
+                                          .toString() +
+                                      ' Postingan',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              )
+            : Center(
+                child: Text('Tidak ada data'),
+              );
   }
 
   String parseToHashTag(String text) {

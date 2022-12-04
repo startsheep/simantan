@@ -24,7 +24,9 @@ class SearchController extends GetxController {
   final RxInt selectedTab = 0.obs;
   final Rx<TextEditingController> searchController =
       TextEditingController().obs;
-  RxString searchText = ' '.obs;
+  RxString searchTextFlag = ' '.obs;
+  RxString searchTextPost = ' '.obs;
+  RxString searchTextUser = ' '.obs;
   final _lastPage = false.obs;
   int get _limit => paginationFilter.value.limit!;
   int get _page => paginationFilter.value.page!;
@@ -58,10 +60,10 @@ class SearchController extends GetxController {
     print("fetchPosts");
     // refresh();
     update();
-    final response = await Get.find<PostProvider>().getPosts(
+    final response = await Get.find<PostProvider>().searchPosts(
       paginationFilter.value,
-      search: searchText.value,
-      flagId: selectedFlagId.value,
+      search: searchTextPost.value,
+      flagId: selectedFlagId.value.toString(),
     );
     print(response.statusCode);
     print(response.body);
@@ -81,9 +83,8 @@ class SearchController extends GetxController {
     print("fetchUsers");
     // refresh();
     update();
-    final response = await Get.find<UserProvider>().getUsers(
-      paginationFilter.value,
-    );
+    final response = await Get.find<UserProvider>()
+        .getUsers(paginationFilter.value, search: searchTextUser.value);
     print(response.statusCode);
     print(response.body);
     if (response.statusCode == 200) {
@@ -92,19 +93,31 @@ class SearchController extends GetxController {
         _lastPage.value = true;
       } else {
         _lastPage.value = false;
-        _users.addAll(response.body['data']);
+        _users.assignAll(response.body['data']);
       }
+    }
+  }
+
+  void onSelectedTab() {
+    if (selectedTab.value == 0) {
+      fetchFlags();
+    } else if (selectedTab.value == 1) {
+      fetchPosts();
+    } else if (selectedTab.value == 2) {
+      fetchUsers();
     }
   }
 
   @override
   void onReady() {
     super.onReady();
-    fetchUsers();
-    ever(selectedFlagId, ((callback) => fetchPosts()));
-    debounce(searchText, (_) => fetchFlags(),
+    ever(selectedTab, (_) => onSelectedTab());
+    ever(selectedFlagId, (callback) => fetchPosts());
+    debounce(searchTextFlag, (_) => fetchFlags(),
         time: Duration(milliseconds: 500));
-    debounce(searchText, (_) => fetchPosts(),
+    debounce(searchTextPost, (_) => fetchPosts(),
+        time: Duration(milliseconds: 500));
+    debounce(searchTextUser, (_) => fetchUsers(),
         time: Duration(milliseconds: 500));
     if (_posts.length > 0) {
       ever(paginationFilter, (_) => fetchPosts());

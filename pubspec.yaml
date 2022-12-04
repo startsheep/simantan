@@ -17,6 +17,10 @@ dependencies:
   image_downloader: ^0.31.0
   loading_animation_widget: ^1.2.0+3
   google_fonts: 3.0.1
+  images_picker: ^1.2.11
+  dio: 4.0.6
+  external_path: ^1.0.3
+  permission_handler: 10.2.0
   flutter: 
     sdk: flutter
 

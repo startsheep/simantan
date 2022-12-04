@@ -4,7 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 class SchemaColor {
   static const Color primary = Color.fromRGBO(77, 110, 255, 1);
   static const Color success = Color.fromARGB(255, 111, 255, 111);
-  static const Color primaryDark = Color.fromARGB(255, 15, 25, 34);
+  static const Color primaryDark = Color.fromARGB(255, 25, 25, 25);
+  static const Color dFontColor = Color.fromARGB(255, 25, 25, 25);
   static const Color primaryLight = Color(0xFF64B5F6);
   static const Color accent = Color(0xFF00ACC1);
   static const Color accentDark = Color(0xFF00838F);
@@ -30,7 +31,8 @@ class SchemaColor {
       backgroundColor: background,
       scaffoldBackgroundColor: surface,
       errorColor: error,
-      fontFamily: GoogleFonts.montserrat().fontFamily,
+      fontFamily: GoogleFonts.poppins().fontFamily,
+      // textTheme: TextTheme(d)
     );
   }
 }

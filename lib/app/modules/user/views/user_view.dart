@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:simantan/app/modules/home/widgets/post_actions.dart';
 import 'package:simantan/app/modules/home/widgets/post_description.dart';
+import 'package:simantan/app/widgets/count_widget.dart';
 
 import '../controllers/user_controller.dart';
 
@@ -40,6 +41,37 @@ class UserView extends GetView<UserController> {
                     fontWeight: FontWeight.bold,
                     color: Color.fromARGB(255, 15, 25, 34)),
               ),
+              const SizedBox(width: 10),
+              Divider(
+                // color: Colors.black,
+                thickness: 1,
+                indent: 10,
+              ),
+              Obx(() {
+                return Container(
+                  width: Get.width / 2,
+                  child: Row(
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        // flex: 5,
+                        child: CountWidget(
+                          count: controller.countPost.value,
+                          title: "Postingan",
+                        ),
+                      ),
+                      Expanded(
+                        // flex: 5,
+                        child: CountWidget(
+                          count: controller.countLike.value,
+                          title: "Suka",
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
               Divider(
                 // color: Colors.black,
                 thickness: 1,

@@ -10,15 +10,18 @@ class UserProvider extends GetConnect {
     httpClient.baseUrl = 'http://simantan.startsheep.my.id/api/';
   }
 
-  Future<Response> getUsers(LazyLoadingFilter filter) {
+  Future<Response> getUsers(LazyLoadingFilter filter, {String? search}) {
+    print('search: $search');
+
     return get(
       'user',
       headers: {
         'Authorization': 'Bearer ' + AuthServices.getToken,
       },
       query: {
-        // 'page': filter.page.toString(),
-        // 'per_page': filter.limit.toString(),
+        'search': search,
+        'page': filter.page.toString(),
+        'per_page': filter.limit.toString(),
       },
     );
   }
@@ -52,5 +55,17 @@ class UserProvider extends GetConnect {
         'Authorization': 'Bearer ' + AuthServices.getToken,
       },
     );
+  }
+
+  Future<Response> getCountPost(int userId) {
+    return get('user/count-post/$userId', headers: {
+      'Authorization': 'Bearer ' + AuthServices.getToken,
+    });
+  }
+
+  Future<Response> getCountLike(int userId) {
+    return get('user/count-like/$userId', headers: {
+      'Authorization': 'Bearer ' + AuthServices.getToken,
+    });
   }
 }

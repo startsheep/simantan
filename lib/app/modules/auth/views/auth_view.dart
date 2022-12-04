@@ -22,6 +22,7 @@ class AuthView extends GetView<AuthController> {
           padding: const EdgeInsets.all(15),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // image
               Image.asset(
@@ -43,6 +44,7 @@ class AuthView extends GetView<AuthController> {
               ),
               const Text(
                 "Sistem Informasi Dokumentasi Kegiatan",
+                textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,

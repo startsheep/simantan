@@ -74,6 +74,7 @@ class HomeView extends GetView<HomeController> {
                     child: RefreshIndicator(
                       onRefresh: () => controller.postController.refresh(),
                       child: ListView.builder(
+                        key: const PageStorageKey('home'),
                         itemCount: controller.postController.posts.length,
                         itemBuilder: (context, index) {
                           final post = controller.postController.posts[index];
@@ -116,10 +117,12 @@ class HomeView extends GetView<HomeController> {
                                   contentUrl: post['image'],
                                 ),
                                 PostActions(
-                                  key: UniqueKey(),
+                                  // key: UniqueKey(),
+                                  key: ValueKey(post['id']),
                                   postId: post['id'],
                                   likeCount: post['countLike'],
                                   pathImage: post['image'],
+                                  userName: post['user']['name'],
                                 ),
                                 PostDescription(
                                   username: post['user']['name'],

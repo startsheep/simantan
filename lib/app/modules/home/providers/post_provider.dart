@@ -44,18 +44,32 @@ class PostProvider extends GetConnect {
   }
 
   Future<Response> getPosts(
+    LazyLoadingFilter filter,
+  ) {
+    return get('post', headers: {
+      'Authorization': 'Bearer ' + AuthServices.getToken,
+    }, query: {
+      'page': filter.page.toString(),
+      'per_page': filter.limit.toString(),
+    });
+  }
+
+  Future<Response> searchPosts(
     LazyLoadingFilter filter, {
     String? flagId,
     String? search,
-  }) =>
-      get('post', headers: {
-        'Authorization': 'Bearer ' + AuthServices.getToken,
-      }, query: {
-        'search': search,
-        // 'flag_id': '1',
-        'page': filter.page.toString(),
-        'per_page': filter.limit.toString(),
-      });
+  }) {
+    print('flagId: $flagId');
+    return get('post', headers: {
+      'Authorization': 'Bearer ' + AuthServices.getToken,
+    }, query: {
+      'flag': flagId.toString(),
+      'search': search,
+      'page': filter.page.toString(),
+      'per_page': filter.limit.toString(),
+    });
+  }
+
   Future<Response> getPostsByUser(LazyLoadingFilter filter, String userID) =>
       get('post', headers: {
         'Authorization': 'Bearer ' + AuthServices.getToken,
